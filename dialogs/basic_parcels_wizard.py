@@ -26,6 +26,8 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from PyQt5.QtCore import QMetaType
+from qgis.core import QgsField, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, Qgis
 from .bpw_first_page import BPWFirstPage
 from .bpw_input_page import BPWInputPage
 from .bpw_last_page import BPWLastPage
@@ -39,7 +41,7 @@ FORM_CLASS, _ = uic.loadUiType(
     from_imports=True,
     import_from='cria_memorial')
 
-
+#TODO: Configurar para ignorar não preenchidos?
 class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
     def __init__(self, feature_contexts: list[FeatureContext], parent=None):
         """Constructor."""
@@ -50,21 +52,34 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.feature_contexts = feature_contexts
+        self.layers = set([feature_context.layer for feature_context in feature_contexts])
+        self.prepare_layers()
+        self.update_features()
         self.setupUi(self)
+        self.input_pages: list[BPWInputPage] = []
+        self.next_button = self.button(QtWidgets.QWizard.NextButton)
+        self.next_button.setDefault(True)
+        self.setButtonText(QtWidgets.QWizard.CustomButton1, "Ir para o fim")
         self.populate()
-        self.rejected.connect(self.clean_highlights)
+        self.rejected.connect(self.quit)
+        self.accepted.connect(self.finish)
+        self.currentIdChanged.connect(self.on_page_changed)
+        self.customButtonClicked.connect(self.on_custom_button_clicked)
 
     def populate(self):
         self.removePage(1)
         self.removePage(0)
         self.addPage(BPWFirstPage())
         for feature_context in self.feature_contexts:
-            self.addPage(BPWInputPage(feature_context))
+            new_page = BPWInputPage(feature_context)
+            self.addPage(new_page)
+            if feature_context.layer.fields().indexOf("nome_lote") != -1:
+                parcel_name = feature_context.feature["nome_lote"]
+                if parcel_name:
+                    new_page.set_parcel_name(str(parcel_name))
+            self.input_pages.append(new_page)
         self.addPage(BPWLastPage())
 
-    def clean_highlights(self):
-        for fc in self.feature_contexts:
-            fc.layer.removeSelection()
 
     def get_results(self):
         result_list = []
@@ -75,3 +90,58 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
     def get_main_parcel_name(self):
         last_page = self.page(self.pageIds()[-1])
         return last_page.selected_parcel_name
+
+    def prepare_layers(self):
+        # prepara a camada para receber o nome do lote como atributo e exibir como label
+        for layer in self.layers:
+            fields = layer.fields()
+            layer.startEditing()
+            if fields.indexOf("nome_lote") == -1:
+                if layer.addAttribute(QgsField("nome_lote", QMetaType.Type.QString)):
+                    print("Atributo adicionado")
+                    layer.updateFields()
+                else:
+                    print("Falha ao criar atributo")
+            settings = QgsPalLayerSettings()
+            settings.fieldName = "nome_lote"
+            settings.placement = Qgis.LabelPlacement.OverPoint
+            layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+            layer.setLabelsEnabled(True)
+
+    def quit(self):
+        self.clean_highlights()
+        for fc in self.feature_contexts:
+            fc.layer.rollBack()
+
+    def finish(self):
+
+        self.clean_highlights
+        for fc in self.feature_contexts:
+            fc.layer.commitChanges()
+
+    def clean_highlights(self):
+
+        for layer in self.layers:
+            layer.removeSelection()
+    
+    def update_features(self):
+
+        for fc in self.feature_contexts:
+            id = fc.feature.id()
+            fc.feature = fc.layer.getFeature(id)
+
+    def on_page_changed(self):
+
+        self.clean_highlights()
+        page = self.currentPage()
+        if isinstance(page, BPWInputPage):
+            page.feature_context.layer.select(
+                page.feature_context.feature.id()
+            )
+        self.next_button.setDefault(True)
+
+    def on_custom_button_clicked(self, which):
+
+        if which == QtWidgets.QWizard.CustomButton1:
+            while self.nextId() != -1:
+                self.next()

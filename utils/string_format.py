@@ -3,7 +3,7 @@ def format_name(nome: str):
     word_list = nome.lower().split()
     processed_word_list = []
     for index, p in enumerate(word_list):
-        if p in prepositions and index is not 0:
+        if p in prepositions and index != 0:
             processed_word_list.append(p)
         else:
             processed_word_list.append(p.capitalize())
@@ -17,3 +17,9 @@ def segment_ordinal(index: int):
     #the parameter should be the index of the segment in the list, so that 0 would be first, 1 - second, and so on
     ordinals = ['primeiro', 'segundo', 'terceiro', 'quarto', 'quinto', 'sexto', 'sétimo', 'oitavo', 'nono', 'décimo']
     return ordinals[index]
+
+def float_to_string(num: float) -> str:
+    return f"{num:.2f}".replace(".",",")
+
+def check_plural(condition: bool):
+    return "s" if condition else ""

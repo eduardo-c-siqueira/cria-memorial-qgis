@@ -26,50 +26,37 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
-from ..utils.dialog_builder import create_label_qline_pairs, add_label_qline_pairs_to_qvbox
+from ..models.data_classes import GeneralInfoObject
+from ..models.complements import Side
+from .street_confrontations_widget import StreetConfrontationsWidget
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
         os.path.dirname(__file__),
-        'basic_parcel_dialog_base.ui'),
+        'street_confrontations_tabwidget_container_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
 
-
-class BasicParcelDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, number_of_parcels=1, parent=None):
+class StreetConfrontationsTabWidgetContainer(QtWidgets.QTabWidget, FORM_CLASS):
+    def __init__(self, side: Side, parent=None):
         """Constructor."""
-        super(BasicParcelDialog, self).__init__(parent)
+        super(StreetConfrontationsTabWidgetContainer, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
         # After self.setupUi() you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.side = side
+        self.tabs: dict[str, StreetConfrontationsWidget] = {}
         self.setupUi(self)
-        self.text_input_dict = {}
-        self.populate(number_of_parcels)
-        
+        self.create_tabs()
 
-    def populate(self, number_of_parcels: int):
-        if number_of_parcels>1:
-            for i in range(number_of_parcels):
-                create_label_qline_pairs({
-                    f"nome{i+1}": f"NOME DO LOTE ({i+1})",
-                    f"quadra{i+1}": f"QUADRA ({i+1})",
-                    f"planta{i+1}": f"PLANTA ({i+1})",
-                    f"cod_planta{i+1}": f"CÓDIGO DA PLANTA ({i+1})"
-                    }, 
-                    self.text_input_dict)
-        else:
-            create_label_qline_pairs({
-                f"nome1": f"NOME DO LOTE:",
-                f"quadra1": f"QUADRA:",
-                f"planta1": f"PLANTA:",
-                f"cod_planta1": f"CÓDIGO DA PLANTA:"
-                }, 
-                self.text_input_dict)
-        add_label_qline_pairs_to_qvbox(self.verticalLayout, self.text_input_dict)
+    def create_tabs(self):
+        self.tabWidget.clear()
 
-    def get_text_input_result(self, key: str):
-        return self.text_input_dict[key]["input"].text()
+        for segment in self.side.segments:
+            self.tabs[segment.name] = StreetConfrontationsWidget()
+
+        for name, widget in self.tabs.items():
+            self.tabWidget.addTab(widget, name)

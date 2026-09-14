@@ -27,6 +27,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from ..models.data_classes import GeneralInfoObject
+from .failed_validation_dialog import FailedValidationDialog
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -35,7 +36,6 @@ FORM_CLASS, _ = uic.loadUiType(
         'general_info_dialog_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
-
 
 class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
@@ -47,127 +47,45 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-
-
-        self.prepare_inputs()
-        self.populate()
-
-    def prepare_inputs(self):
-        self.text_input_dict = {
-                            "stamp": {
-                                "label": QtWidgets.QLabel("TÍTULO DO CARIMBO DA PRANCHA DE PROJETO DE LOTEAMENTO APROVADO:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "arquitect":{
-                                "label": QtWidgets.QLabel("ARQUITETA/ARQUITETO:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "cau_code":{
-                                "label": QtWidgets.QLabel("CAU:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "block":{
-                                "label": QtWidgets.QLabel("QUADRA:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "site_plan":{
-                                "label": QtWidgets.QLabel("PLANTA:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "site_plan_code":{
-                                "label": QtWidgets.QLabel("CÓDIGO DA PLANTA:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "district":{
-                                "label": QtWidgets.QLabel("BAIRRO:"),
-                                "input": QtWidgets.QLineEdit()
-                            },
-                            "property_identifier":{
-                                "label": QtWidgets.QLabel("INDICAÇÃO FISCAL:"),
-                                "input": QtWidgets.QLineEdit()
-                            }
-                        }
-        self.radial_input_dict = {
-                    "arquitect_gender": {
-                        "label": QtWidgets.QLabel("Gênero"),
-                        "group": QtWidgets.QButtonGroup(),
-                        "masculino": QtWidgets.QRadioButton("Masculino"),
-                        "feminino": QtWidgets.QRadioButton("Feminino")
-                    }
-                }
+        self.gender_btn_group = QtWidgets.QButtonGroup()
+        self.gender_btn_group.addButton(self.female_radioButton)
+        self.gender_btn_group.addButton(self.male_radioButton)
         
 
-    def populate(self):
-        self.verticalLayout.addWidget(self.text_input_dict["stamp"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["stamp"]["input"])
-        self.verticalLayout.addWidget(self.text_input_dict["arquitect"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["arquitect"]["input"])
-        self.radial_input_dict["arquitect_gender"]["group"].addButton(self.radial_input_dict["arquitect_gender"]["masculino"])
-        self.radial_input_dict["arquitect_gender"]["group"].addButton(self.radial_input_dict["arquitect_gender"]["feminino"])
-        self.verticalLayout.addWidget(self.radial_input_dict["arquitect_gender"]["label"])
-        self.verticalLayout.addWidget(self.radial_input_dict["arquitect_gender"]["feminino"])
-        self.verticalLayout.addWidget(self.radial_input_dict["arquitect_gender"]["masculino"])
-        self.verticalLayout.addWidget(self.text_input_dict["cau_code"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["cau_code"]["input"])
-        self.verticalLayout.addWidget(self.text_input_dict["block"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["block"]["input"])
-        self.verticalLayout.addWidget(self.text_input_dict["site_plan"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["site_plan"]["input"])
-        self.verticalLayout.addWidget(self.text_input_dict["site_plan_code"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["site_plan_code"]["input"])
-        self.verticalLayout.addWidget(self.text_input_dict["district"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["district"]["input"])
-        self.verticalLayout.addWidget(self.text_input_dict["property_identifier"]["label"])
-        self.verticalLayout.addWidget(self.text_input_dict["property_identifier"]["input"])
-
     def pre_set(self, data: GeneralInfoObject):
-        self.text_input_dict["stamp"]["input"].setText(data.stamp)
-        self.text_input_dict["arquitect"]["input"].setText(data.arquitect)
-        self.radial_input_dict["arquitect_gender"][data.arquitect_gender.lower()].setChecked(True)
-        self.text_input_dict["cau_code"]["input"].setText(data.cau_code)                
-        self.text_input_dict["block"]["input"].setText(data.block)
-        self.text_input_dict["site_plan"]["input"].setText(data.site_plan)
-        self.text_input_dict["site_plan_code"]["input"].setText(data.site_plan_code)
-        self.text_input_dict["district"]["input"].setText(data.district)
-        self.text_input_dict["property_identifier"]["input"].setText(data.property_identifier)
+        self.stamp_lineEdit.setText(data.stamp)
+        self.architect_lineEdit.setText(data.architect)
+        #TODO: elaborar forma de trazer dado de gênero
+        # self.radial_input_dict["architect_gender"][data.architect_gender.lower()].setChecked(True)
+        self.cau_code_lineEdit.setText(data.cau_code)
+
+    def accept(self):
+        if self.gender_btn_group.checkedButton() is None:
+            self.groupBox.setStyleSheet("color: red;")
+            FailedValidationDialog("Gênero").exec_()
+            return
+        else:
+            super().accept()
 
     def as_general_info_object(self):
+
+        print("architect_lineEdit:", self.architect_lineEdit)
+        print("architect:", hasattr(self, "architect"))
+
         return GeneralInfoObject(
-            self.stamp, self.arquitect, self.arquitect_gender, self.cau_code, self.block, self.site_plan, self.site_plan_code, self.district, self.property_identifier
+            self.stamp, self.architect, self.architect_gender, self.cau_code
         )
-
-    #auxiliary methods
-    def get_text_input_result(self, key: str):
-        return self.text_input_dict[key]["input"].text()
-
-    def get_radial_input_result(self, key: str):
-        return self.radial_input_dict[key]["group"].checkedButton().text()
 
     #properties
     @property
     def stamp(self):
-        return self.get_text_input_result("stamp")
+        return self.stamp_lineEdit.text()
     @property
-    def arquitect(self):
-        return self.get_text_input_result("arquitect")
+    def architect(self):
+        return self.architect_lineEdit.text()
     @property
-    def arquitect_gender(self):
-        return self.get_radial_input_result("arquitect_gender")
+    def architect_gender(self):
+        return self.gender_btn_group.checkedButton().text().replace("&","")
     @property
     def cau_code(self):
-        return self.get_text_input_result("cau_code")
-    @property
-    def block(self):
-        return self.get_text_input_result("block")
-    @property
-    def site_plan(self):
-        return self.get_text_input_result("site_plan")
-    @property
-    def site_plan_code(self):
-        return self.get_text_input_result("site_plan_code")    
-    @property
-    def district(self):
-        return self.get_text_input_result("district")
-    @property
-    def property_identifier(self):
-        return self.get_text_input_result("property_identifier")
+        return self.cau_code_lineEdit.text()

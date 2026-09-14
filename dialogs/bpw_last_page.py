@@ -28,6 +28,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt import QtWidgets
 from .bpw_input_page import BPWInputPage
+from ..models.data_classes import FeatureContext
+from .failed_validation_dialog import FailedValidationDialog
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -36,7 +38,6 @@ FORM_CLASS, _ = uic.loadUiType(
         'bpw_last_page_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
-
 
 class BPWLastPage(QtWidgets.QWizardPage, FORM_CLASS):
     def __init__(self, parent=None):
@@ -47,44 +48,89 @@ class BPWLastPage(QtWidgets.QWizardPage, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.button_group = QtWidgets.QButtonGroup()
         self.setupUi(self)
+        self.feature_references: dict[str, FeatureContext] = {}
 
     def initializePage(self):
         wizard = self.wizard()
         wizard.clean_highlights()
-
+        layout = self.gridLayout
         # clear layout rows except first
-        for row in range(self.gridLayout.rowCount() -1, 0, -1):
-            for column in range(self.gridLayout.columnCount()-1, -1, -1):
-                item = self.gridLayout.itemAtPosition(row, column)
+        for row in range(layout.rowCount() -1, 0, -1):
+            for column in range(layout.columnCount()-1, -1, -1):
+                item = layout.itemAtPosition(row, column)
                 if item is not None:
                     widget = item.widget()
                     if widget is not None:
                         widget.deleteLater()
-                        self.gridLayout.removeItem(item)
+                        layout.removeItem(item)
 
         #populate layout
-        for index, pageId in enumerate(wizard.pageIds()[1:-1]):
+        self.feature_references = {}
+        for page_id_index, pageId in enumerate(wizard.pageIds()[1:-1]):
             input_page:BPWInputPage = wizard.page(pageId)
             values = input_page.get_values()
+            self.feature_references[values["parcel_name"]] = input_page.feature_context
 
-            self.gridLayout.addWidget(QtWidgets.QLabel(values["parcel_name"]), index+1, 0, Qt.AlignTop)
-            self.gridLayout.addWidget(QtWidgets.QLabel(values["block"]), index+1, 1, Qt.AlignTop)
-            self.gridLayout.addWidget(QtWidgets.QLabel(values["site_plan"]), index+1, 2, Qt.AlignTop)
-            self.gridLayout.addWidget(QtWidgets.QLabel(values["site_plan_code"]), index+1, 3, Qt.AlignTop)
+            items = [
+                QtWidgets.QRadioButton(values["parcel_name"]),
+                QtWidgets.QLabel(values["block"]),
+                QtWidgets.QLabel(values["site_plan"]),
+                QtWidgets.QLabel(values["site_plan_code"]),
+                # QtWidgets.QRadioButton()
+            ]
 
-            radio = QtWidgets.QRadioButton()
+            for item_index, item in enumerate(items):
+                item.setSizePolicy(
+                    QtWidgets.QSizePolicy.Preferred,
+                    QtWidgets.QSizePolicy.Preferred
+                )
+                layout.addWidget(item, page_id_index+1, item_index)
+                if item_index != 0:
+                    item.setAlignment(Qt.AlignCenter)
+
+            radio = items[0]
             radio.toggled.connect(self.manage_main_parcel_selection)
-            self.gridLayout.addWidget(radio, index+1, 4, Qt.AlignTop)
+            self.button_group.addButton(radio)
+
+        finish_button = wizard.button(QtWidgets.QWizard.FinishButton)
+        finish_button.setDefault(False)
+        finish_button.setAutoDefault(False)            
+        
+        for row in range(layout.rowCount()):
+            self.set_row_min_heigth(row)
+
+        self.scrollAreaWidgetContents.setMinimumHeight(layout.sizeHint().height())
+
+        layout.activate()
+
+    def validatePage(self):
+        if self.button_group.checkedButton() is None:
+            FailedValidationDialog("Lote Principal").exec_()
+            return False
+        else:
+            return True
 
     def manage_main_parcel_selection(self, checked):
         radio_button = self.sender()
 
-        index = self.gridLayout.indexOf(radio_button)
-        row, _, _, _ = self.gridLayout.getItemPosition(index)
+        layout = self.gridLayout
+        index = layout.indexOf(radio_button)
+        row, _, _, _ = layout.getItemPosition(index)
 
         if checked:
-            radio_button.setText("Lote principal")
-            self.selected_parcel_name = self.gridLayout.itemAtPosition(row, 0).widget().text()
+            for column in range(0,4):
+                layout.itemAtPosition(row, column).widget().setStyleSheet("font-weight: bold; color: green;")
+            self.selected_parcel_name = radio_button.text()
+            feature_context = self.feature_references[self.selected_parcel_name]
+            wizard = self.wizard()
+            wizard.clean_highlights()
+            feature_context.layer.select(feature_context.feature.id())
         else:
-            radio_button.setText("")
+            for column in range(0,4):
+                layout.itemAtPosition(row, column).widget().setStyleSheet("font-weight: unset; color: black;")
+            # radio_button.setStyleSheet("font-weight: unset;")      
+
+    def set_row_min_heigth(self, row):
+        self.gridLayout.setRowMinimumHeight(row, 20)

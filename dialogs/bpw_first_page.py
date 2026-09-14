@@ -26,6 +26,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtCore import QTimer
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -46,4 +47,25 @@ class BPWFirstPage(QtWidgets.QWizardPage, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        
+        self.block_lineEdit.editingFinished.connect(self.update_block)
+        self.site_plan_lineEdit.editingFinished.connect(self.update_site_plan)
+        self.site_plan_code_lineEdit.editingFinished.connect(self.update_site_plan_code)
+
+    def update_block(self):
+        data = self.block_lineEdit.text()
+        for page in self.wizard().input_pages:
+            page.set_block(data)
+
+    def update_site_plan(self):
+        data = self.site_plan_lineEdit.text()
+        for page in self.wizard().input_pages:
+            page.set_site_plan(data)
+
+    def update_site_plan_code(self):
+        data = self.site_plan_code_lineEdit.text()
+        for page in self.wizard().input_pages:
+            page.set_site_plan_code(data)
+
+    def initializaPage(self):
+        self.wizard().clean_highlights()
+        QTimer.singleShot(0, self.block_lineEdit.setFocus)

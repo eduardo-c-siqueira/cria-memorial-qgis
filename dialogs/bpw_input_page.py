@@ -26,6 +26,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtCore import QTimer
 from ..models.data_classes import FeatureContext
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
@@ -35,7 +36,6 @@ FORM_CLASS, _ = uic.loadUiType(
         'bpw_input_page_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
-
 
 class BPWInputPage(QtWidgets.QWizardPage, FORM_CLASS):
     def __init__(self, feature_context: FeatureContext, parent=None):
@@ -48,6 +48,7 @@ class BPWInputPage(QtWidgets.QWizardPage, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.feature_context = feature_context
         self.setupUi(self)
+        self.parcel_name_lineEdit.editingFinished.connect(self.update_name_label)
 
 
     def get_values(self):
@@ -60,11 +61,30 @@ class BPWInputPage(QtWidgets.QWizardPage, FORM_CLASS):
         }
 
     def set_values(self, parcel_name: str, block: str, site_plan: str, site_plan_code: str):
+        self.set_parcel_name(parcel_name)
+        self.set_block(block)
+        self.set_site_plan(site_plan)
+        self.set_site_plan_code(site_plan_code)
+
+    def set_parcel_name(self, parcel_name: str):
         self.parcel_name_lineEdit.setText(parcel_name)
-        self.block_lineEdit.setText(block)
-        self.site_plan_lineEdit.setText(site_plan)
-        self.site_plan_code_lineEdit.setText(site_plan_code)
+
+    def set_block(self, input: str):
+        self.block_lineEdit.setText(input)
+
+    def set_site_plan(self, input: str):
+        self.site_plan_lineEdit.setText(input)
+
+    def set_site_plan_code(self, input: str):
+        self.site_plan_code_lineEdit.setText(input)
+
+    def update_name_label(self):
+        self.feature_context.feature["nome_lote"] = self.parcel_name_lineEdit.text()
+        self.feature_context.layer.updateFeature(self.feature_context.feature)
+
+        self.feature_context.layer.triggerRepaint()
 
     def initializePage(self):
-        self.wizard().clean_highlights()
-        self.feature_context.layer.select(self.feature_context.feature.id())
+        # self.wizard().clean_highlights()
+        # self.feature_context.layer.select(self.feature_context.feature.id())
+        QTimer.singleShot(0, self.parcel_name_lineEdit.setFocus)

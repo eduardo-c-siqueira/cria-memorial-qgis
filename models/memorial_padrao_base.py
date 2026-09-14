@@ -1,17 +1,19 @@
+from .data_classes import GeneralInfoObject
+
 class MemorialPadraoBase:
 
-    def __init__(self, titulo_carimbo, arquitetx, genero_arquitetx, cau):
-        self.titulo_carimbo = titulo_carimbo
-        self.arquitetx = arquitetx
-        self.genero_arquitetx = genero_arquitetx
-        self.cau = cau
-  
+    def __init__(self, general_info: GeneralInfoObject):
+        self.general_info = general_info
+        self.stamp = self.general_info.stamp
+        self.architect = self.general_info.architect
+        self.architect_gender = self.general_info.architect_gender
+        self.cau_code = self.general_info.cau_code
 
     def identificaArquitetx(self):
         x = "x"
-        if self.genero_arquitetx == "Masculino":
+        if self.architect_gender == "Masculino":
             x = "o"
-        elif self.genero_arquitetx == "Feminino":
+        elif self.architect_gender == "Feminino":
             x = "a"
 
-        return f"Arquitet{x} {self.arquitetx} CAU {self.cau}"
+        return f"Arquitet{x} {self.architect} CAU {self.cau_code}"

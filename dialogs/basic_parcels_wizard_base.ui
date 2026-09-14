@@ -6,15 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>394</height>
+    <width>696</width>
+    <height>385</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>DEFINIÇÃO BÁSICA DE LOTES</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <property name="wizardStyle">
+   <enum>QWizard::ClassicStyle</enum>
   </property>
   <property name="options">
-   <set>QWizard::HelpButtonOnRight</set>
+   <set>QWizard::HaveCustomButton1|QWizard::HelpButtonOnRight|QWizard::NoDefaultButton</set>
   </property>
   <widget class="QWizardPage" name="wizardPage1"/>
   <widget class="QWizardPage" name="wizardPage2"/>

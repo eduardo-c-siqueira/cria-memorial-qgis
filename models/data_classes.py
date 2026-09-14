@@ -5,14 +5,9 @@ from qgis.core import QgsVectorLayer, QgsFeature
 class GeneralInfoObject:
 
     stamp: str
-    arquitect: str
-    arquitect_gender: str
+    architect: str
+    architect_gender: str
     cau_code: str
-    block: str
-    site_plan: str
-    site_plan_code: str
-    district: str
-    property_identifier: str
 
 @dataclass
 class FeatureContext:
@@ -21,6 +16,7 @@ class FeatureContext:
 
 @dataclass
 class MainParcelDialogResult:
+    district: str
     street_side: str
     main_street_name: str
     main_street_code: str
@@ -30,3 +26,10 @@ class MainParcelDialogResult:
     cross_street_name: str
     cross_street_code: str
     property_identifier: str
+
+@dataclass
+class SidesWidgetResult:
+    front: list
+    left: list
+    right: list
+    back: list | None = None

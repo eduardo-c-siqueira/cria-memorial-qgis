@@ -6,9 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>680</width>
-    <height>260</height>
+    <width>382</width>
+    <height>217</height>
    </rect>
+  </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>WizardPage</string>
@@ -19,18 +22,69 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>659</width>
-     <height>239</height>
+     <x>30</x>
+     <y>20</y>
+     <width>581</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">
-    <string>ETAPA 2: Dê um nome a todos os lotes do projeto</string>
+    <string>ETAPA 2: NOMEAR OS LOTES DO PROJETO
+
+ Comece predefinindo os valores abaixo. 
+(Você poderá alterar cada lote individualmente nos passos seguintes)</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
+  </widget>
+  <widget class="QWidget" name="formLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>100</y>
+     <width>331</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout">
+    <property name="horizontalSpacing">
+     <number>6</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>14</number>
+    </property>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="block_lineEdit"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>QUADRA:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>PLANTA:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>CÓDIGO DA PLANTA:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="site_plan_lineEdit"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="site_plan_code_lineEdit"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

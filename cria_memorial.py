@@ -22,27 +22,24 @@
  ***************************************************************************/
 """
 from qgis.PyQt.QtCore import QLocale, QTranslator, QCoreApplication
-from qgis.core import Qgis, QgsWkbTypes, QgsSettings, QgsProject, QgsMapLayerType 
+from qgis.core import QgsSettings, QgsProject
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 
 # Import the code for the dialog
-from .lixeira.cria_memorial_dialog import CriaMemorialDialog
-from .lixeira.teste_dialog import TesteDialog
-from .lixeira.teste_dinamico_dialog import TesteDinamicoDialog
-from .dialogs.general_info_dialog import GeneralInfoDialog
-from .dialogs.basic_parcels_wizard import BasicParcelsWizard
-from .dialogs.main_parcel_dialog import MainParcelDialog
-# from .basic_parcel_dialog import BasicParcelDialog
+from .dialogs.show_result_dialog import ShowResultDialog
+from .dialogs.cancel_dialog import CancelDialog
 
+from .models.memorial_padrao_base import MemorialPadraoBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
-from .models.full_parcel import FullParcel
-from .models.basic_parcel import BasicParcel
-from .models.complements import Side, Front, Segment, Street
-from .models.data_classes import GeneralInfoObject
-from .utils.db_manager import DataBaseManager
-from .processing import filter_polygon_features
+from .processing import (
+    process_general_info_dialog, 
+    process_parcel_definition,
+    process_main_parcel_dialog,
+    process_sides_definition,
+    process_confrontation_definition
+)
 
 import os.path
 
@@ -194,236 +191,61 @@ class CriaMemorial:
                 action)
             self.iface.removeToolBarIcon(action)
 
-
     def run(self):
         """Run method that performs all the real work"""
 
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
             self.first_start = False
-            self.db_manager = DataBaseManager()
-
-        #loads from DB
-        self.general_info: GeneralInfoObject = self.db_manager.get("general_info")
-        self.parcels: list[BasicParcel] = self.db_manager.get("parcels") or []
-        self.main_parcel_name = self.db_manager.get("main_parcel_name")
-
-        project = QgsProject.instance()        
-        general_info_dialog = GeneralInfoDialog()
-
-        if self.general_info:
-            general_info_dialog.pre_set(self.general_info)
+            self.general_info = None
+            self.cancel_dialog = CancelDialog()
         
-        general_info_dlg_result = general_info_dialog.exec_()
-        if general_info_dlg_result:
-            self.db_manager.update("general_info", general_info_dialog.as_general_info_object())
+        self.project = QgsProject.instance()
+        self.create_memorial_p_loteamento()
 
-        feature_list = filter_polygon_features(project)
-        parcel_definition_wizard = BasicParcelsWizard(feature_list)
-        parcel_definition_result = parcel_definition_wizard.exec_()
-        if parcel_definition_result:
-            for result in parcel_definition_wizard.get_results():
-                self.parcels.append(
-                    BasicParcel(
-                        result["parcel_name"],
-                        result["block"],
-                        result["site_plan"],
-                        result["site_plan_code"],
-                        result["feature_context"]
-                    )
-                )
-            self.db_manager.update("parcels", self.parcels)
-            self.main_parcel_name = parcel_definition_wizard.get_main_parcel_name()
-            self.db_manager.update("main_parcel_name", self.main_parcel_name)
+    def create_memorial_p_loteamento(self):
 
-        selected_parcel = next((parcel for parcel in self.parcels if parcel.name == self.main_parcel_name), None)
-        print(f"""Lote selecionada como principal:
-        Nome: {selected_parcel.name}
-        Quadra: {selected_parcel.block}
-        Planta: {selected_parcel.site_plan_name}""")
-        main_parcel_dialog = MainParcelDialog(selected_parcel)
-        main_parcel_dialog_result = main_parcel_dialog.exec_()
-        # self.test()
-
-    def capture_polygons(self, project):
-        # capture the project's polygons
-        polygon_layers = {
-            layer 
-            for layer in project.mapLayers().values() 
-            if layer.type() == QgsMapLayerType.VectorLayer
-            and layer.geometryType() == QgsWkbTypes.PolygonGeometry
-            }
-        print("capture the polygons in each layer and verifies multiPolygons")
-        polygons = []
-        multi_polygons = []
-        for layer in polygon_layers:
-            for feature in layer.getFeatures():
-                geom = feature.geometry()
-                if geom.type() == Qgis.GeometryType.Polygon:
-                    print("Encontrado multiPolígono")
-                    geom_collection = geom.asGeometryCollection()
-                    if len(geom_collection) == 1:
-                        print("Encontrado multiPolígono com 1 elemento")
-                        polygons.append({
-                                "name": f"{layer.name()} {str(feature.id()) if layer.featureCount()>1 else ''}",
-                                "geom": geom_collection[0]
-                                })
-                    elif len(geom_collection) > 1:
-                        print("Encontrado multipoligono com mais de 1 elemento")
-                        multi_polygons.append(geom)
-
-        print("\nPolígonos únicos encontrados:")
-        for polygon in polygons:
-            print("Polígono:", polygon["name"], polygon["geom"].asWkt())
-        if len(multi_polygons)>0:
-            print("aviso! Encontrados Multipolígonos!")
+        result_step_1 = process_general_info_dialog(self.general_info)
+        if result_step_1 is not None:
+            self.general_info = result_step_1
         else:
-            print("Nenhum MultiPolígono encontrado!")
-        print("end of phase1")
-        return polygons
+            self.cancel_dialog.exec_()
+            return
 
-    def project_polygons_to_parcels(self, project: QgsProject) -> list[BasicParcel]:
-        result_list = []
-        polygon_layers = {
-            layer 
-            for layer in project.mapLayers().values() 
-            if layer.type() == QgsMapLayerType.VectorLayer
-            and layer.geometryType() == QgsWkbTypes.PolygonGeometry
-            }
-        for layer in polygon_layers:
-            for feature in layer.getFeatures():
-                geom = feature.geometry()
-                if geom.type() == Qgis.GeometryType.Polygon:
-                    if geom.isMultipart():
-                        collection = geom.asGeometryCollection()
-                        if len(collection) > 1:
-                            # process_multi_part()
-                            print("Multipolígono Encontrado!")
-                        elif len(collection) == 1:
-                            layer.selectByIds([feature.id()])
-                            dlg = BasicParcelDialog()
-                            if dlg.exec_():
-                                parcel = BasicParcel(
-                                    dlg.get_text_input_result("nome1"),
-                                    dlg.get_text_input_result("quadra1"),
-                                    dlg.get_text_input_result("planta1"),
-                                    dlg.get_text_input_result("cod_planta1"),
-                                    collection[0]
-                                )
-                                result_list.append(parcel)
-                                    
-        return result_list
+        result_step_2 = process_parcel_definition(self.iface, self.project)
+        if result_step_2 is not None:
+            selected_parcel, other_parcels = result_step_2
+        else:
+            self.cancel_dialog.exec_()
+            return
 
-    def test(self):
-        main_parcel = FullParcel(
-                    "default_name",
-                    "default_block",
-                    "default_site_plan",
-                    None,
-                    None,
-                    "default_district",
-                    "par",
-                    Street("default_front_street_name", None),
-                    "default_number",
-                    "regular",
-                    "default_distance_to_corner",
-                    Street("default_corner_street", None),
-                    "default_area",
-                    "default_porperty_identifier",
-                    Front("default_front_name", [Segment(1,"default_front_measure","default_front_confrontations")],Street("default_front_street_name", None)),
-                    True,
-                    [Side("default_side1",[Segment(1,"default_side1_measure","default_side1_confrontations")]),Side("default_side2",[Segment(1,"default_side2_measure","default_side2_confrontations")]),Side("default_side3",[Segment(1,"default_side3_measure","default_side3_confrontations")])]
-                    )
-        memorial = MemorialPadraoLoteamento("default_stamp", "default_arquitect", "Masculino", "default_CAU", main_parcel)
-        general_info_dialog = GeneralInfoDialog()
-        project = QgsProject.instance()
+        result_step_3 = process_main_parcel_dialog(selected_parcel)
+        if result_step_3 is not None:
+            self.main_parcel = result_step_3
+        else:
+            self.cancel_dialog.exec_()
+            return
 
-        general_info_dlg_result = general_info_dialog.exec_()
-        if general_info_dlg_result:
-            print(f"""
-                MEMORIAL DESCRITIVO DO {general_info_dialog.stamp}
-            Quadra: {general_info_dialog.block}
-            Planta: {general_info_dialog.site_plan},
-            Bairro: {general_info_dialog.block}
-            IF: {general_info_dialog.property_identifier}
-            Arquitet{"a" if general_info_dialog.arquitect_gender == "Feminino" else "o"}: {general_info_dialog.arquitect}
-            Genero: {general_info_dialog.arquitect_gender}
-            """)
-            main_parcel.district = general_info_dialog.block
-            main_parcel.property_identifier = general_info_dialog.property_identifier
-            memorial.arquitetx = general_info_dialog.arquitect
-            memorial.cau = general_info_dialog.cau_code
-            memorial.titulo_carimbo = general_info_dialog.stamp
-            memorial.genero_arquitetx = general_info_dialog.arquitect_gender
+        if self.memorial is None:
+            self.memorial = MemorialPadraoLoteamento(
+                MemorialPadraoBase(self.general_info), 
+                self.main_parcel, 
+                other_parcels
+            )
+        else:
+            self.memorial.main_parcel = self.main_parcel
+            self.memorial.other_parcels = other_parcels
 
-        parcel_list = self.project_polygons_to_parcels(project)
-        # TODO: desenvolver dialog de seleção do lote
-        # TODO: desenvolver separação dos lados e vertices para posterior seleção
-        # TODO: desenvolver dialog de definição de lados
-        # TODO: desenvolver dialog para informações complementares do lote principal
+        result_step_4 = process_sides_definition(self.iface, self.project, self.memorial.main_parcel)
+        if result_step_4 is False:
+            self.cancel_dialog.exec_()
+            return
 
-        #TODO: código de teste a ser deletado após resolução
-        first_parcel = parcel_list[0]
-        main_parcel.block = first_parcel.block
-        main_parcel.site_plan_name = first_parcel.site_plan_name
-        main_parcel.name = first_parcel.name
-        main_parcel.site_plan_code = first_parcel.site_plan_code
-        print(memorial.geraMemorial())
-
-        # polygons = self.capture_polygons(project)
-
-        # dinamic_dlg = TesteDinamicoDialog(polygon_list=polygons)
-        # dinamic_dlg.show()
-        # dinamic_result = dinamic_dlg.exec_()
-        # print("Resultado", dinamic_result)
-
-        # if dinamic_result:
-        #     for polygon in polygons:
-        #         polygon["name"] = dinamic_dlg.polygon_dict[polygon["name"]].text()
-        # print("Lista atualizada:", polygons)
-
-        # new_dinamic_dlg = TesteDinamicoDialog(polygon_list=polygons)
-        # new_dinamic_dlg.show()
-        # new_dinamic_dlg.exec_()
-
-        
-        
-        # # show the dialog
-        # self.dlg.mMapLayerComboBox.setFilters(Qgis.LayerFilter.PolygonLayer)
-        # self.dlg.show()
-        # # Run the dialog event loop
-        # result = self.dlg.exec_()
-        # # See if OK was pressed
-        # if result:
-
-            # captura projeto e lista as mapLayers
-            # listar todos os polígonos, e verificar se existe multipolígono
-            # nomeia todos os polígonos tranformando em loteBasico
-            # pergunta qual o lote principal e o tipo de memorial + informações complementares do lote principal
-            
-            ## LOTEAMENTO 
-
-
-            # print("Camada selecionada: ", self.dlg.mMapLayerComboBox.currentLayer().name())
-            # print("Botão funcionando aindaaaaaaaaaaaaaaa")
-            
-
-            # for layer_id, layer in project.mapLayers().items():
-            #     print(layer.name, layer_id)
-                
-            # activeLayer = self.iface.activeLayer()
-
-            # print("Camada ativa: " + activeLayer.name())
-
-            # camadaVertice = project.mapLayersByName("Vértices")[0]
-
-            # print("Camada Vértice: " + camadaVertice.name())
-
-            # for feat in camadaVertice.getFeatures():
-            #     print(f"Feição: {feat.id()}")
-            #     print(f"Atributos: {feat.attributes()}")
-            #     for i, v in enumerate(feat.geometry().vertices()):
-            #         print(f"Vértice {i}: ({v.x()}, {v.y()})")
-
-        # self.dlg2.show()
+        result_step_5 = process_confrontation_definition(self.memorial.main_parcel)
+        if result_step_5:
+            #Processa criação de memorial
+            print(self.memorial.geraMemorial())
+            final_result_dlg = ShowResultDialog(self.memorial.geraMemorial())
+            final_result_dlg.exec_()
+        else:
+            self.cancel_dialog.exec_()
+            return

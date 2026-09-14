@@ -1,23 +1,30 @@
 from .memorial_padrao_base import MemorialPadraoBase
 from .full_parcel import FullParcel
+from .basic_parcel import BasicParcel
 
 class MemorialPadraoLoteamento(MemorialPadraoBase):
-  def __init__(self, titulo_carimbo, arquitetx, genero_arquitetx, cau, lote: FullParcel):
-      super().__init__(titulo_carimbo, arquitetx, genero_arquitetx, cau)
-      self.lote = lote
+    
+    def __init__(self, memorial_padrao_base: MemorialPadraoBase, main_parcel: FullParcel | None = None, other_parcels: list[BasicParcel] | None = None):
+        super().__init__(memorial_padrao_base.general_info)
+        self.main_parcel = main_parcel
+        self.other_parcels = other_parcels
 
-  def geraMemorial(self):
+    def geraMemorial(self):
 
-      texto = f"""
-      MEMORIAL DESCRITIVO DO {self.titulo_carimbo}
-      Lote de terreno {self.lote.name},{self.lote.describe_block()} da planta {self.lote.describe_site_plan()},
-      localizado nesta capital, no bairro {self.lote.district}, {self.lote.describe_side_of_street()} {self.lote.street.description},
-      {self.lote.describe_property_number()} {self.lote.describe_distance_to_corner()} esquina formada com a {self.lote.corner_street.description},
-      de forma {self.lote.shape}, com área total de {self.lote.area} metros quadrados, e com as seguintes medidas, características e confrontações do ponto de vista de quem da frente o observa:
-      {self.lote.front.describe_front()};
-      {self.lote.lado1.describe_side()};
-      {self.lote.lado2.describe_side()}; e,
-      {self.lote.lado3.describe_side()}, fechando o perímetro. {self.lote.print_property_identificer()}
-      {self.identificaArquitetx()}"""
+        self.main_parcel.define_confrontations(self.other_parcels)
 
-      return texto
+        texto = (
+            f"MEMORIAL DESCRITIVO DO {self.stamp} \n\n"
+            f"Lote de terreno {self.main_parcel.name},{self.main_parcel.describe_block()} da planta {self.main_parcel.describe_site_plan()}, "
+            f"localizado nesta capital, no bairro {self.main_parcel.district}, {self.main_parcel.describe_side_of_street()} {self.main_parcel.street.description},"
+            f"{self.main_parcel.describe_property_number()} {self.main_parcel.describe_distance_to_corner()} esquina formada com a {self.main_parcel.corner_street.description}, "
+            f"de forma {self.main_parcel.shape}, com área total de {self.main_parcel.area} metros quadrados, "
+            "e com as seguintes medidas, características e confrontações do ponto de vista de quem da frente o observa: "
+            f"{self.main_parcel.front.describe_front()}; "
+            f"{self.main_parcel.left_side.describe_side()}; "
+            f"{(self.main_parcel.back.describe_side() +";") if self.main_parcel.back is not None else ""} e, "
+            f"{self.main_parcel.right_side.describe_side()}, fechando o perímetro. \n\n{self.main_parcel.print_property_identificer()}"
+            f"\n\n{self.identificaArquitetx()}"
+        )
+
+        return texto

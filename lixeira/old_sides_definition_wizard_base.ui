@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Wizard</class>
+ <widget class="QWizard" name="Wizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>566</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Wizard</string>
+  </property>
+  <widget class="QWizardPage" name="wizardPage1">
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>531</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>QUAL A CONFIGURAÇÃO DE LADOS DO LOTE?</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="sides_quant_comboBox">
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+       <property name="placeholderText">
+        <string>Selecione uma opção...</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>3 LADOS: FRENTE, DIREITA, ESQUERDA</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4 LADOS: FRENTE, DIREITA, FUNDOS, ESQUERDA</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWizardPage" name="wizardPage2">
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>521</width>
+      <height>195</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="side_1_label">
+       <property name="text">
+        <string>FRENTE</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="side_1_comboBox">
+       <property name="placeholderText">
+        <string>Selecione uma opção...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="side_2_label">
+       <property name="text">
+        <string>DIREITA</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="side_2_comboBox">
+       <property name="placeholderText">
+        <string>Selecione uma opção...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="side_3_label">
+       <property name="text">
+        <string>FUNDOS</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="side_3_comboBox">
+       <property name="placeholderText">
+        <string>Selecione uma opção...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="side_4_label">
+       <property name="text">
+        <string>ESQUERDA</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="side_4_comboBox">
+       <property name="placeholderText">
+        <string>Selecione uma opção...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>519</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SELECIONE O SEGMENTO INICIAL DE CADA LADO:</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

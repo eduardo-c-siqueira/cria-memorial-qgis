@@ -13,7 +13,7 @@ class DialogBuilder:
                 "input": QtWidgets.QLineEdit()
             }
 
-    def add_label_qline_pairs_to_qvbox(self, qvbox: QtWidgets.QVBoxLayout, pairs: dict):
+    def add_label_qline_pairs_to_qvbox(self, qvbox: QtWidgets.QVBoxLayout):
         for pair in self.pair_dict.values():
             qvbox.addWidget(pair["label"])
             qvbox.addWidget(pair["input"])

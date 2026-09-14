@@ -28,6 +28,7 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from ..models.data_classes import MainParcelDialogResult
 from ..models.basic_parcel import BasicParcel
+from .failed_validation_dialog import FailedValidationDialog
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -36,7 +37,6 @@ FORM_CLASS, _ = uic.loadUiType(
         'main_parcel_dialog_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
-
 
 class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parcel: BasicParcel, parent=None):
@@ -62,15 +62,28 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
         self.shape_btn_group.addButton(self.regular_shape_radioButton)
         self.shape_btn_group.addButton(self.irregular_shape_radioButton)
 
+    def accept(self):
+        shape_selected = self.shape_btn_group.checkedButton() is not None
+        street_side_selected = self.street_side_btn_group.checkedButton() is not None
+        if shape_selected and street_side_selected:
+            super().accept()
+        else:
+            missing_info = []
+            if shape_selected is False:
+                missing_info.append("Forma Regular/Irregular")
+            if street_side_selected is False:
+                missing_info.append("Lado Ímpar/Par")
+            FailedValidationDialog(*missing_info).exec_()
 
     def get_result(self) -> MainParcelDialogResult:
         return MainParcelDialogResult(
+            self.district_lineEdit.text(),
             self.street_side_btn_group.checkedButton().text(),
             self.main_street_name_lineEdit.text(),
             self.main_street_code_lineEdit.text(),
             self.number_lineEdit.text(),
             self.shape_btn_group.checkedButton().text(),
-            self.distance_to_corner_lineEdit.text(),
+            self.distance_to_corner_SpinBox.text(),
             self.cross_street_name_lineEdit.text(),
             self.cross_street_code_lineEdit.text(),
             self.property_identifier_lineEdit.text()
