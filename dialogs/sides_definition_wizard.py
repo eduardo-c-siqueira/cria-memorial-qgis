@@ -26,11 +26,13 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, Qgis
 
 from ..models.data_classes import SidesWidgetResult
 from ..models.segment import Segment
 from .failed_validation_dialog import FailedValidationDialog
+from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -39,7 +41,6 @@ FORM_CLASS, _ = uic.loadUiType(
         'sides_definition_wizard_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
-
 
 class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
     def __init__(self, segments: list[Segment], parent=None):
@@ -58,6 +59,7 @@ class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
         self.consider_4_sides = True
         self.__side_field_name__ = 'side'
         self.setupUi(self)
+        self.setWindowIcon(QIcon(icon_path('aiG-icon')))
         self.comboboxes = {
             "side_1_start": self.side_1_comboBox, 
             "side_1_end": self.side_1_comboBox_2, 

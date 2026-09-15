@@ -26,9 +26,11 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtGui import QIcon
 from ..models.data_classes import MainParcelDialogResult
 from ..models.basic_parcel import BasicParcel
 from .failed_validation_dialog import FailedValidationDialog
+from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -48,6 +50,7 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.setWindowIcon(QIcon(icon_path('aiG-icon')))
         self.parcel = parcel
         self.finished.connect(self.clean_highlight)
         parcel.feature_context.layer.select(parcel.feature_context.feature.id())

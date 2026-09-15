@@ -26,12 +26,14 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtGui import QIcon
 from PyQt5.QtCore import QMetaType
 from qgis.core import QgsField, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, Qgis
 from .bpw_first_page import BPWFirstPage
 from .bpw_input_page import BPWInputPage
 from .bpw_last_page import BPWLastPage
 from ..models.data_classes import FeatureContext
+from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -56,6 +58,7 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         self.prepare_layers()
         self.update_features()
         self.setupUi(self)
+        self.setWindowIcon(QIcon(icon_path('aiG-icon')))
         self.input_pages: list[BPWInputPage] = []
         self.next_button = self.button(QtWidgets.QWizard.NextButton)
         self.next_button.setDefault(True)

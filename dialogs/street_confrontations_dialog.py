@@ -26,8 +26,10 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from qgis.PyQt.QtGui import QIcon
 from ..models.complements import Side, Street, Front
 from .street_confrontations_tabwidget_container import StreetConfrontationsTabWidgetContainer #tabs s.name: tab
+from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -49,6 +51,7 @@ class StreetConfrontationsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.sides = sides
         self.pages: dict[Side, StreetConfrontationsTabWidgetContainer] = {}
         self.setupUi(self)
+        self.setWindowIcon(QIcon(icon_path('aiG-icon')))
         self.create_pages()
         self.comboBox.currentIndexChanged.connect(self.select_page)
 

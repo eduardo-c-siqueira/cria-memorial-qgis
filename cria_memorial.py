@@ -26,11 +26,8 @@ from qgis.core import QgsSettings, QgsProject
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-
-# Import the code for the dialog
 from .dialogs.show_result_dialog import ShowResultDialog
 from .dialogs.cancel_dialog import CancelDialog
-
 from .models.memorial_padrao_base import MemorialPadraoBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
 from .processing import (
@@ -40,6 +37,7 @@ from .processing import (
     process_sides_definition,
     process_confrontation_definition
 )
+from .paths import ICONS_DIR
 
 import os.path
 
@@ -172,7 +170,7 @@ class CriaMemorial:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = os.path.join(os.path.dirname(__file__), 'icon.png')
+        icon_path = os.path.join(ICONS_DIR, 'aiG-icon.png')
         self.add_action(
             icon_path,
             text=self.tr(u'Criar memorial'),
