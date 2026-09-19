@@ -41,10 +41,8 @@ def process_general_info_dialog(general_info: GeneralInfoObject | None = None) -
      else:
           return None
 
-def process_parcel_definition(iface, project: QgsProject) -> tuple[BasicParcel, list[BasicParcel]] | None:
+def process_parcel_definition(iface, feature_list: list[FeatureContext]) -> tuple[BasicParcel, list[BasicParcel]] | None:
 
-     #TODO: Criar verificação de features selecionadas antes de continuar
-     feature_list = filter_polygon_features(project)
      zoom_to_features(iface, feature_list)
      parcel_definition_wizard = BasicParcelsWizard(feature_list)
 

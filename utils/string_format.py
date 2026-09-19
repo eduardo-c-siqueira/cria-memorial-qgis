@@ -18,7 +18,7 @@ def segment_ordinal(index: int):
     ordinals = ['primeiro', 'segundo', 'terceiro', 'quarto', 'quinto', 'sexto', 'sétimo', 'oitavo', 'nono', 'décimo']
     return ordinals[index]
 
-def float_to_string(num: float) -> str:
+def float_to_string_2f(num: float) -> str:
     return f"{num:.2f}".replace(".",",")
 
 def check_plural(condition: bool):

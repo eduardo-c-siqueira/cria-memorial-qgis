@@ -28,9 +28,11 @@ from qgis.PyQt.QtWidgets import QAction
 
 from .dialogs.show_result_dialog import ShowResultDialog
 from .dialogs.cancel_dialog import CancelDialog
-from .models.memorial_padrao_base import MemorialPadraoBase
+from .dialogs.alert_dialog import AlertDialog
+from .models.memorial_base import MemorialBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
 from .processing import (
+    filter_polygon_features,
     process_general_info_dialog, 
     process_parcel_definition,
     process_main_parcel_dialog,
@@ -198,6 +200,16 @@ class CriaMemorial:
             self.cancel_dialog = CancelDialog()
         
         self.project = QgsProject.instance()
+        # Cria verificação de features selecionadas antes de continuar
+        self.feature_list = filter_polygon_features(self.project)
+        if not self.feature_list:
+            AlertDialog("Nenhum polígno selecionado!\nPor favor, selecione os polígonos a serem utilizados no documento.").exec_()
+            return
+        else:
+            accepted = AlertDialog("Lembre-se de selecionar todos os polígonos a serem utilizados no documento antes de continuar!", True).exec_()
+            if not accepted:
+                return
+
         self.create_memorial_p_loteamento()
 
     def create_memorial_p_loteamento(self):
@@ -209,7 +221,7 @@ class CriaMemorial:
             self.cancel_dialog.exec_()
             return
 
-        result_step_2 = process_parcel_definition(self.iface, self.project)
+        result_step_2 = process_parcel_definition(self.iface, self.feature_list)
         if result_step_2 is not None:
             selected_parcel, other_parcels = result_step_2
         else:

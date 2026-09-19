@@ -1,3 +1,11 @@
 README.txt
 README.html
-./lixeira
+lixeira/
+
+.venv/
+__pycache__/
+*.pyc
+
+dialogs/test_dialog.py
+dialogs/test_dialog_base.ui
+tests.py

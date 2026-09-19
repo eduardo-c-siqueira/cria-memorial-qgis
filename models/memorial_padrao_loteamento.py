@@ -1,10 +1,10 @@
-from .memorial_padrao_base import MemorialPadraoBase
+from .memorial_base import MemorialBase
 from .full_parcel import FullParcel
 from .basic_parcel import BasicParcel
 
-class MemorialPadraoLoteamento(MemorialPadraoBase):
+class MemorialPadraoLoteamento(MemorialBase):
     
-    def __init__(self, memorial_padrao_base: MemorialPadraoBase, main_parcel: FullParcel | None = None, other_parcels: list[BasicParcel] | None = None):
+    def __init__(self, memorial_padrao_base: MemorialBase, main_parcel: FullParcel | None = None, other_parcels: list[BasicParcel] | None = None):
         super().__init__(memorial_padrao_base.general_info)
         self.main_parcel = main_parcel
         self.other_parcels = other_parcels

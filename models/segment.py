@@ -1,4 +1,4 @@
-from ..utils.string_format import float_to_string, check_plural
+from ..utils.string_format import float_to_string_2f, check_plural
 from .basic_parcel import BasicParcel
 from .data_classes import FeatureContext
 
@@ -40,4 +40,4 @@ class Segment:
         return self.feature_context.feature.geometry().length()
     @property
     def measure_str(self) -> str:
-        return float_to_string(self.measure_flt)
+        return float_to_string_2f(self.measure_flt)
