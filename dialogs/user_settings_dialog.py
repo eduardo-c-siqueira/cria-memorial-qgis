@@ -28,67 +28,62 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
 
-from .user_settings_dialog import UserSettingsDialog
-from .alert_dialog import AlertDialog
+from ..paths import icon_path
 from ..models.user_settings import UserSettings
 from ..models.enums import DocumentFormat
-from ..models.data_classes import GeneralInfoObject
-from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
         os.path.dirname(__file__),
-        'show_result_dialog_base.ui'),
+        'user_settings_dialog_base.ui'),
     from_imports=True,
     import_from='cria_memorial')
 
-class ShowResultDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, result: str, user_settings: UserSettings, parent=None):
+class UserSettingsDialog(QtWidgets.QDialog, FORM_CLASS):
+    def __init__(self, user_settings: UserSettings, parent=None):
         """Constructor."""
-        super(ShowResultDialog, self).__init__(parent)
+        super(UserSettingsDialog, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
         # After self.setupUi() you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.format_preference_btn_group = QtWidgets.QButtonGroup()
+        self.format_preference_btn_group.addButton(self.pdf_default_radioButton)
+        self.format_preference_btn_group.addButton(self.docx_default_radioButton)
         self.setWindowIcon(QIcon(icon_path('aiG-icon')))
         self.user_settings = user_settings
-        self.user_settings_dialog = UserSettingsDialog(self.user_settings, self)
-        self.settings_btn = self.buttonBox.addButton(
-            "Configurações",
-            QtWidgets.QDialogButtonBox.ActionRole
-        )
-        self.settings_btn.clicked.connect(self.user_settings_dialog.exec_)
-        self.textBrowser.setPlainText(result)
+        self.atc_logo_QgsFileWidget.setFilter(DocumentFormat.IMAGE.filter)
+        self.main_logo_QgsFileWidget.setFilter(DocumentFormat.IMAGE.filter)
+        self.load_settings()
+        self.accepted.connect(self.save_settings)
 
-    def set_file_name(self, format: DocumentFormat):
-        self.new_file_name, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Salvar arquivo final", "", format.filter)
-        print(self.new_file_name)
+    def load_settings(self):
 
-    def accept(self):
-
-        format_preference = self.user_settings.output_doc_format_preference
-
-        match format_preference:
+        match self.user_settings.output_doc_format_preference:
 
             case DocumentFormat.PDF:
-                if not self.user_settings.atc_logo_path or not self.user_settings.main_logo_path:
-                    AlertDialog("Antes de continuar, defina os arquivos de logo para o PDF, ou mude a opção de salvamento!", False, self).exec_()
-                    self.user_settings_dialog.exec_()
-                    return
-
+                self.pdf_default_radioButton.setChecked(True)
+        
             case DocumentFormat.DOCX:
-                if not self.user_settings.docx_template_path:
-                    AlertDialog("Antes de continuar, defina o arquivo de template DOCX, ou mude a opção de salvamento!", False, self).exec_()
-                    self.user_settings_dialog.exec_()
-                    return
-                
-            case _:
-                AlertDialog("Sem opções de salvamento definidas! Faça a configuração antes de prosseguir!", False, self).exec_()
-                self.user_settings_dialog.exec_()
-                return
-            
-        self.set_file_name(format_preference)
-        super().accept()
+                self.docx_default_radioButton.setChecked(True)
+        
+        self.atc_logo_QgsFileWidget.setFilePath(self.user_settings.atc_logo_path)
+        self.main_logo_QgsFileWidget.setFilePath(self.user_settings.main_logo_path)
+        self.docx_template_QgsFileWidget.setFilePath(self.user_settings.docx_template_path)
+
+    def save_settings(self):
+
+        match self.format_preference_btn_group.checkedButton():
+
+            case self.pdf_default_radioButton:
+                self.user_settings.output_doc_format_preference = DocumentFormat.PDF
+
+            case self.docx_default_radioButton:
+                self.user_settings.output_doc_format_preference = DocumentFormat.DOCX
+
+        self.user_settings.atc_logo_path = self.atc_logo_QgsFileWidget.filePath()
+        self.user_settings.main_logo_path = self.main_logo_QgsFileWidget.filePath()
+        self.user_settings.docx_template_path = self.docx_template_QgsFileWidget.filePath()

@@ -27,7 +27,6 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
-from ..models.data_classes import GeneralInfoObject
 from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer

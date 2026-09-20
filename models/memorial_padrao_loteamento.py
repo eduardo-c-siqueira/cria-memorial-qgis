@@ -1,6 +1,7 @@
 from .memorial_base import MemorialBase
 from .full_parcel import FullParcel
 from .basic_parcel import BasicParcel
+from .data_classes import CreateMemorialResult
 
 class MemorialPadraoLoteamento(MemorialBase):
     
@@ -9,12 +10,9 @@ class MemorialPadraoLoteamento(MemorialBase):
         self.main_parcel = main_parcel
         self.other_parcels = other_parcels
 
-    def geraMemorial(self):
-
-        self.main_parcel.define_confrontations(self.other_parcels)
-
-        texto = (
-            f"MEMORIAL DESCRITIVO DO {self.stamp} \n\n"
+    @property
+    def body(self):
+        return (
             f"Lote de terreno {self.main_parcel.name},{self.main_parcel.describe_block()} da planta {self.main_parcel.describe_site_plan()}, "
             f"localizado nesta capital, no bairro {self.main_parcel.district}, {self.main_parcel.describe_side_of_street()} {self.main_parcel.street.description},"
             f"{self.main_parcel.describe_property_number()} {self.main_parcel.describe_distance_to_corner()} esquina formada com a {self.main_parcel.corner_street.description}, "
@@ -23,8 +21,13 @@ class MemorialPadraoLoteamento(MemorialBase):
             f"{self.main_parcel.front.describe_front()}; "
             f"{self.main_parcel.left_side.describe_side()}; "
             f"{(self.main_parcel.back.describe_side() +";") if self.main_parcel.back is not None else ""} e, "
-            f"{self.main_parcel.right_side.describe_side()}, fechando o perímetro. \n\n{self.main_parcel.print_property_identificer()}"
-            f"\n\n{self.identificaArquitetx()}"
+            f"{self.main_parcel.right_side.describe_side()}, fechando o perímetro. \n\n{self.main_parcel.print_property_identifier()}"
         )
 
-        return texto
+    def geraMemorial(self):
+
+        self.main_parcel.define_confrontations(self.other_parcels)
+
+        full_text = f"{self.heading}\n\n {self.body}\n\n{self.architect_identification}"
+
+        return (full_text, CreateMemorialResult(self.heading, self.body, self.architect_identification))

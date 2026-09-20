@@ -62,7 +62,7 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         self.input_pages: list[BPWInputPage] = []
         self.next_button = self.button(QtWidgets.QWizard.NextButton)
         self.next_button.setDefault(True)
-        self.setButtonText(QtWidgets.QWizard.CustomButton1, "Ir para o fim")
+        self.setButtonText(QtWidgets.QWizard.CustomButton1, "Pular para &Revisão")
         self.populate()
         self.rejected.connect(self.quit)
         self.accepted.connect(self.finish)
@@ -101,10 +101,7 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
             layer.startEditing()
             if fields.indexOf("nome_lote") == -1:
                 if layer.addAttribute(QgsField("nome_lote", QMetaType.Type.QString)):
-                    print("Atributo adicionado")
                     layer.updateFields()
-                else:
-                    print("Falha ao criar atributo")
             settings = QgsPalLayerSettings()
             settings.fieldName = "nome_lote"
             settings.placement = Qgis.LabelPlacement.OverPoint

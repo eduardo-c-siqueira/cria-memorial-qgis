@@ -34,6 +34,8 @@ from .dialogs.cancel_dialog import CancelDialog
 from .dialogs.alert_dialog import AlertDialog
 from .models.memorial_base import MemorialBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
+from .models.user_settings import UserSettings
+from .models.enums import DocumentFormat
 from .processing import (
     filter_polygon_features,
     process_general_info_dialog, 
@@ -42,7 +44,7 @@ from .processing import (
     process_sides_definition,
     process_confrontation_definition
 )
-from .paths import ICONS_DIR
+from .services import doc_generator
 
 import os.path
 
@@ -201,8 +203,10 @@ class CriaMemorial:
             self.first_start = False
             self.general_info = None
             self.cancel_dialog = CancelDialog()
+            self.user_settings = UserSettings()
         
         self.project = QgsProject.instance()
+
         # Cria verificação de features selecionadas antes de continuar
         self.feature_list = filter_polygon_features(self.project)
         if not self.feature_list:
@@ -217,7 +221,7 @@ class CriaMemorial:
 
     def create_memorial_p_loteamento(self):
 
-        result_step_1 = process_general_info_dialog(self.general_info)
+        result_step_1 = process_general_info_dialog(self.user_settings, self.general_info)
         if result_step_1 is not None:
             self.general_info = result_step_1
         else:
@@ -238,15 +242,11 @@ class CriaMemorial:
             self.cancel_dialog.exec_()
             return
 
-        if self.memorial is None:
-            self.memorial = MemorialPadraoLoteamento(
-                MemorialPadraoBase(self.general_info), 
-                self.main_parcel, 
-                other_parcels
+        self.memorial = MemorialPadraoLoteamento(
+            MemorialBase(self.general_info), 
+            self.main_parcel, 
+            other_parcels
             )
-        else:
-            self.memorial.main_parcel = self.main_parcel
-            self.memorial.other_parcels = other_parcels
 
         result_step_4 = process_sides_definition(self.iface, self.project, self.memorial.main_parcel)
         if result_step_4 is False:
@@ -256,9 +256,31 @@ class CriaMemorial:
         result_step_5 = process_confrontation_definition(self.memorial.main_parcel)
         if result_step_5:
             #Processa criação de memorial
-            print(self.memorial.geraMemorial())
-            final_result_dlg = ShowResultDialog(self.memorial.geraMemorial())
-            final_result_dlg.exec_()
+            memorial_full_text, memorial_result = self.memorial.geraMemorial()
+            final_result_dlg = ShowResultDialog(memorial_full_text, self.user_settings)
+            accepted = final_result_dlg.exec_()
+            if accepted:
+                match self.user_settings.output_doc_format_preference:
+                    case DocumentFormat.PDF:
+                        doc_generator.save_as_pdf(
+                            memorial_result.heading,
+                            memorial_result.body, 
+                            memorial_result.architect_identification,
+                            final_result_dlg.new_file_name,
+                            self.user_settings.atc_logo_path,
+                            self.user_settings.main_logo_path,
+                        )
+                    case DocumentFormat.DOCX:
+                        doc_generator.save_as_docx(
+                            memorial_result.heading,
+                            memorial_result.body,
+                            memorial_result.architect_identification,
+                            final_result_dlg.new_file_name,
+                            self.user_settings.docx_template_path
+                        )
+                    # docx_generate.memorial_doc(memorial_result.heading, memorial_result.body, memorial_result.architect_identification, final_result_dlg.new_file_name, '')
+            else:
+                NotImplementedError
         else:
             self.cancel_dialog.exec_()
             return

@@ -18,6 +18,7 @@ from .models.full_parcel import FullParcel
 from .models.data_classes import GeneralInfoObject
 from .models.complements import Street
 from .models.segment import Segment
+from .models.user_settings import UserSettings
 from .dialogs.general_info_dialog import GeneralInfoDialog
 from .dialogs.basic_parcels_wizard import BasicParcelsWizard
 from .dialogs.main_parcel_dialog import MainParcelDialog
@@ -27,12 +28,9 @@ from .utils.number_format import string_to_float
 
 
 
-def process_general_info_dialog(general_info: GeneralInfoObject | None = None) -> GeneralInfoObject | None:
+def process_general_info_dialog(user_settings: UserSettings, general_info: GeneralInfoObject | None = None) -> GeneralInfoObject | None:
 
-     general_info_dialog = GeneralInfoDialog()
-     
-     if general_info is not None:
-          general_info_dialog.pre_set(general_info)
+     general_info_dialog = GeneralInfoDialog(user_settings)
      
      accepted = general_info_dialog.exec_()
      if accepted:

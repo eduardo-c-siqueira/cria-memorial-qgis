@@ -1,4 +1,5 @@
 from .data_classes import GeneralInfoObject
+from .enums import Gender
 
 class MemorialBase:
 
@@ -18,9 +19,9 @@ class MemorialBase:
 
         x = "x"
 
-        if self.architect_gender == "Masculino":
+        if self.architect_gender == Gender.MALE:
             x = "o"
-        elif self.architect_gender == "Feminino":
+        elif self.architect_gender == Gender.FEMALE:
             x = "a"
 
         return f"Arquitet{x} {self.architect}\nCAU {self.cau_code}"

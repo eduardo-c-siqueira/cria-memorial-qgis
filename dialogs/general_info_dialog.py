@@ -27,8 +27,10 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
-from ..models.data_classes import GeneralInfoObject
 from .failed_validation_dialog import FailedValidationDialog
+from ..models.data_classes import GeneralInfoObject
+from ..models.enums import Gender
+from ..models.user_settings import UserSettings
 from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
@@ -40,7 +42,7 @@ FORM_CLASS, _ = uic.loadUiType(
     import_from='cria_memorial')
 
 class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self, user_settings: UserSettings, parent=None):
         """Constructor."""
         super(GeneralInfoDialog, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
@@ -53,14 +55,19 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
         self.gender_btn_group = QtWidgets.QButtonGroup()
         self.gender_btn_group.addButton(self.female_radioButton)
         self.gender_btn_group.addButton(self.male_radioButton)
-        
+        self.user_settings = user_settings
+        self.load_last_used()
 
-    def pre_set(self, data: GeneralInfoObject):
-        self.stamp_lineEdit.setText(data.stamp)
-        self.architect_lineEdit.setText(data.architect)
-        #TODO: elaborar forma de trazer dado de gênero
-        # self.radial_input_dict["architect_gender"][data.architect_gender.lower()].setChecked(True)
-        self.cau_code_lineEdit.setText(data.cau_code)
+    def load_last_used(self):
+        self.architect_lineEdit.setText(self.user_settings.last_architect_name)
+        self.cau_code_lineEdit.setText(self.user_settings.last_cau_code)
+        match self.user_settings.last_architect_gender:
+            case Gender.MALE:
+                self.male_radioButton.setChecked(True)
+            case Gender.FEMALE:
+                self.female_radioButton.setChecked(True)
+            case _:
+                pass
 
     def accept(self):
         if self.gender_btn_group.checkedButton() is None:
@@ -68,6 +75,9 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
             FailedValidationDialog("Gênero").exec_()
             return
         else:
+            self.user_settings.last_architect_gender = self.architect_gender
+            self.user_settings.last_architect_name = self.architect
+            self.user_settings.last_cau_code = self.cau_code
             super().accept()
 
     def as_general_info_object(self):
@@ -88,7 +98,7 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
         return self.architect_lineEdit.text()
     @property
     def architect_gender(self):
-        return self.gender_btn_group.checkedButton().text().replace("&","")
+        return Gender(self.gender_btn_group.checkedButton().text())
     @property
     def cau_code(self):
         return self.cau_code_lineEdit.text()

@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from qgis.core import QgsVectorLayer, QgsFeature
 
+from .enums import Gender
+
 @dataclass
 class GeneralInfoObject:
 
     stamp: str
     architect: str
-    architect_gender: str
+    architect_gender: Gender
     cau_code: str
 
 @dataclass
@@ -33,3 +35,9 @@ class SidesWidgetResult:
     left: list
     right: list
     back: list | None = None
+
+@dataclass
+class CreateMemorialResult:
+    heading: str
+    body:str
+    architect_identification: str
