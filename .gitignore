@@ -9,3 +9,8 @@ __pycache__/
 dialogs/test_dialog.py
 dialogs/test_dialog_base.ui
 tests.py
+
+third_party/python_docx-1.2.0.dist-info/METADATA
+third_party/python_docx-1.2.0.dist-info/RECORD
+third_party/python_docx-1.2.0.dist-info/top_level.txt
+third_party/python_docx-1.2.0.dist-info/WHEEL

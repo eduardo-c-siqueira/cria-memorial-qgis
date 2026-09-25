@@ -1,7 +1,9 @@
+from abc import ABC, abstractmethod
+
 from .data_classes import GeneralInfoObject
 from .enums import Gender
 
-class MemorialBase:
+class MemorialBase(ABC):
 
     def __init__(self, general_info: GeneralInfoObject):
         self.general_info = general_info
@@ -15,6 +17,11 @@ class MemorialBase:
         return f"MEMORIAL DESCRITIVO DO {self.stamp}"
 
     @property
+    @abstractmethod
+    def body(self):
+        pass
+
+    @property
     def architect_identification(self):
 
         x = "x"
@@ -25,3 +32,7 @@ class MemorialBase:
             x = "a"
 
         return f"Arquitet{x} {self.architect}\nCAU {self.cau_code}"
+
+    @abstractmethod
+    def generate_memorial(self):
+        pass

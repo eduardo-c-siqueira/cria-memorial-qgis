@@ -43,6 +43,7 @@ from .processing import (
     process_main_parcel_dialog,
     process_sides_definition
 )
+from .qgs_processing import filter_polygon_features
 from .services import doc_generator
 
 import os.path
@@ -256,7 +257,7 @@ class CriaMemorial:
         result_step_5 = process_confrontation_definition(self.memorial.main_parcel)
         if result_step_5:
             #Processa criação de memorial
-            memorial_full_text, memorial_result = self.memorial.geraMemorial()
+            memorial_full_text, memorial_result = self.memorial.generate_memorial()
             final_result_dlg = ShowResultDialog(memorial_full_text, self.user_settings)
             accepted = final_result_dlg.exec_()
             if accepted:

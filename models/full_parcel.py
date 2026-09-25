@@ -19,6 +19,7 @@ class FullParcel(BasicParcel):
             distance_to_corner: float = 0, 
             corner_street: Street | None = None, 
             property_identifier: str = "",
+            ordered_qgs_points: list[QgsPoint] | None = None
             ):
         
         super().__init__(base_parcel.name, base_parcel.block, base_parcel.site_plan_name, base_parcel.site_plan_code, base_parcel.feature_context)
@@ -30,6 +31,7 @@ class FullParcel(BasicParcel):
         self.distance_to_corner = distance_to_corner
         self.corner_street = corner_street
         self.property_identifier = property_identifier
+        self.ordered_qgs_points = ordered_qgs_points if ordered_qgs_points else []
 
     def describe_side_of_street(self):
         if self.side_of_the_street:
