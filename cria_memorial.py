@@ -37,12 +37,11 @@ from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
 from .models.user_settings import UserSettings
 from .models.enums import DocumentFormat
 from .processing import (
-    filter_polygon_features,
+    process_confrontation_definition,
     process_general_info_dialog, 
     process_parcel_definition,
     process_main_parcel_dialog,
-    process_sides_definition,
-    process_confrontation_definition
+    process_sides_definition
 )
 from .services import doc_generator
 
@@ -242,9 +241,10 @@ class CriaMemorial:
             self.cancel_dialog.exec_()
             return
 
+        #TODO: inserir definição entre padrão e coordenadas aqui
         self.memorial = MemorialPadraoLoteamento(
-            MemorialBase(self.general_info), 
-            self.main_parcel, 
+            self.general_info, 
+            self.main_parcel,
             other_parcels
             )
 

@@ -1,8 +1,10 @@
-from .complements import Street, Front, Side
+from qgis.core import QgsPoint
+
+from .street import Street
 from .segment import Segment
-from .data_classes import FeatureContext
 from ..utils.string_format import float_to_string_2f, check_plural
 from .basic_parcel import BasicParcel
+from .sides import Front, Side
 
 class FullParcel(BasicParcel):
 
@@ -31,9 +33,9 @@ class FullParcel(BasicParcel):
 
     def describe_side_of_street(self):
         if self.side_of_the_street:
-            return f"no lado {self.side_of_the_street} da"
+            return f" no lado {self.side_of_the_street} da"
         else:
-            return "na"
+            return " na"
 
     def describe_property_number(self):
         if self.number:
@@ -43,13 +45,13 @@ class FullParcel(BasicParcel):
 
     def describe_distance_to_corner(self):
         if self.distance_to_corner != 0.00:
-            return f"a {float_to_string_2f(self.distance_to_corner)} metro{check_plural(self.distance_to_corner > 1)} da"
+            return f" a {float_to_string_2f(self.distance_to_corner)} metro{check_plural(self.distance_to_corner > 1)} da"
         else:
-            return "na"
+            return " na"
 
     def print_property_identifier(self):
         if self.property_identifier is not None and self.property_identifier.strip() != "":
-            return f" Indicação fiscal {self.property_identifier}."
+            return f"Indicação fiscal {self.property_identifier}."
         else:
             return ""
 

@@ -6,7 +6,7 @@ class BasicParcel:
         self.name = name
         self.block = block
         self.site_plan_name = site_plan_name
-        self.site_plan_code = site_plan_code or ""
+        self.site_plan_code = site_plan_code
         self.feature_context = feature_context
 
     def describe_block(self):
@@ -15,9 +15,9 @@ class BasicParcel:
         else:
             return ""
 
-
-    def describe_site_plan(self):
-        if self.site_plan_code is not None and self.site_plan_code.strip() != "":
+    @property
+    def site_plan_identification(self):
+        if self.site_plan_code and self.site_plan_code.strip() != "":
             return f"{self.site_plan_name} ({self.site_plan_code})"
         else:
             return self.site_plan_name

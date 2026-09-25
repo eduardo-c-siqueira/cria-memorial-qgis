@@ -27,7 +27,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from ..models.data_classes import GeneralInfoObject
-from ..models.complements import Side
+from ..models.sides import Side
 from .street_confrontations_widget import StreetConfrontationsWidget
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer

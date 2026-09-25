@@ -1,7 +1,12 @@
 from dataclasses import dataclass
-from qgis.core import QgsVectorLayer, QgsFeature
+from qgis.core import QgsVectorLayer, QgsFeature, QgsPointXY
 
 from .enums import Gender
+
+@dataclass
+class FeatureContext:
+    layer: QgsVectorLayer
+    feature: QgsFeature
 
 @dataclass
 class GeneralInfoObject:
@@ -10,11 +15,6 @@ class GeneralInfoObject:
     architect: str
     architect_gender: Gender
     cau_code: str
-
-@dataclass
-class FeatureContext:
-    layer: QgsVectorLayer
-    feature: QgsFeature
 
 @dataclass
 class MainParcelDialogResult:

@@ -27,9 +27,12 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
-from ..models.complements import Side, Street, Front
+
+from ..models.street import Street
+from ..models.sides import Front, Side
 from .street_confrontations_tabwidget_container import StreetConfrontationsTabWidgetContainer #tabs s.name: tab
 from ..paths import icon_path
+from ..utils.string_format import format_name
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -81,7 +84,7 @@ class StreetConfrontationsDialog(QtWidgets.QDialog, FORM_CLASS):
                 street_name = tab.street_name_lineEdit.text()
                 if street_name.strip() != "":
                     code = tab.street_code_lineEdit.text().strip()
-                    street_description = f"{street_name} ({code})" if code else street_name
+                    street_description = f"{format_name(street_name)} ({code})" if code else format_name(street_name)
                     segment = next(
                         segment for segment in side.segments
                         if segment.name == segment_name
