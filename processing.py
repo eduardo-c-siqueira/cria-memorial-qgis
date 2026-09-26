@@ -2,13 +2,13 @@ from .dialogs.street_confrontations_dialog import StreetConfrontationsDialog
 from qgis.core import (
      QgsProject, 
      QgsVectorLayer,
-     QgsGeometry,
 )
 from .qgs_processing import (
      create_sidebased_rederer, 
      focus_feature, 
      new_vector_layer,
-     segment_from_xypoints, 
+     segment_from_xypoints,
+     qgspoint_from_xypoint,
      zoom_to_features, 
 )
 
@@ -23,6 +23,7 @@ from .dialogs.general_info_dialog import GeneralInfoDialog
 from .dialogs.basic_parcels_wizard import BasicParcelsWizard
 from .dialogs.main_parcel_dialog import MainParcelDialog
 from .dialogs.sides_definition_wizard import SidesDefinitionWizard
+from .dialogs.feature_picker_dialog import FeaturePickerDialog
 from .utils.number_format import string_to_float
 
 
@@ -106,7 +107,7 @@ def process_sides_definition(iface, project: QgsProject, parcel: FullParcel) -> 
                segments.append(segment)
      else:
 
-          segments_layer = new_vector_layer(parcel.feature_context.layer, layer_name, [("id", "integer"), ("name", "string(5)"), ("side", "string(10)")])
+          segments_layer = new_vector_layer(parcel.feature_context.layer, layer_name, [("id", "integer"), ("name", "string(5)"), ("side", "string(10)")], "LineString")
 
           project.addMapLayer(segments_layer)
 
@@ -155,15 +156,44 @@ def process_confrontation_definition(parcel: FullParcel) -> bool:
 
      return accepted
 
-def get_parcel_confrontations(geometry: QgsGeometry, parcel_list: list[BasicParcel]) -> list[str]:
+def process_parcel_vertex_definition(project: QgsProject, parcel: FullParcel) -> bool:
 
-     confrontations = []
+     layer_name = f"camada-de-vértices-lote-{parcel.name}"
+     found_layers: list[QgsVectorLayer] = project.mapLayersByName(layer_name)
+     
+     if found_layers:
+          #TODO: Criar forma de verificar se usuário deseja reutilizar camada
+          vertex_layer = found_layers[0]
+          xy_points = [feature.geometry().asPoint() for feature in vertex_layer.getFeatures()]
+          
+     else:
 
-     for parcel in parcel_list:
+          vertex_layer = new_vector_layer(parcel.feature_context.layer, layer_name, [("id", "integer"), ("name", "string(5)")], "point")
+
+          project.addMapLayer(vertex_layer)
 
           parcel_geom = parcel.feature_context.feature.geometry()
-          intersection = geometry.intersection(parcel_geom)
-          if not intersection.isEmpty() and intersection.length() > 0:
-               confrontations.append(parcel.name)
+          xy_points = parcel_geom.asMultiPolygon()[0][0]
 
-     return confrontations
+          for point in xy_points[:-1]:
+               qgspoint_from_xypoint(vertex_layer, point)
+
+     dlg = FeaturePickerDialog(vertex_layer)
+
+     accepted = dlg.exec_()
+
+     if accepted:
+
+          first_point = dlg.get_selected_feature().geometry().get()
+
+          first_index = next(
+               index 
+               for index, point in enumerate(xy_points) 
+               if point.x() == first_point.x() 
+               and point.y() == first_point.y()
+          )
+          
+          reordered_list = xy_points[first_index:] + xy_points[:first_index]
+          parcel.ordered_qgs_points = reordered_list
+
+     return accepted

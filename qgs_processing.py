@@ -11,12 +11,13 @@ from qgis.core import (
      QgsRendererCategory,
      QgsCategorizedSymbolRenderer,
      QgsRectangle,
+     QgsPoint
      )
 
 from .models.segment import Segment
 from .models.data_classes import FeatureContext
 
-def new_vector_layer(reference_layer, new_layer_name, field_names_n_types: list[(str, str)]):
+def new_vector_layer(reference_layer, new_layer_name, field_names_n_types: list[(str, str)], geometry_type: str):
 
      field_descriptions = []
      for pair in field_names_n_types:
@@ -24,7 +25,7 @@ def new_vector_layer(reference_layer, new_layer_name, field_names_n_types: list[
           field_descriptions.append(f"&field={name}:{type}")
 
      return QgsVectorLayer(
-                    f"LineString?crs={reference_layer.crs().authid()}{"".join(field_descriptions)}", 
+                    f"{geometry_type}?crs={reference_layer.crs().authid()}{"".join(field_descriptions)}", 
                     new_layer_name,
                     "memory"
                )
@@ -37,7 +38,18 @@ def segment_from_xypoints(target_layer: QgsVectorLayer, xy_points: tuple[QgsPoin
      feature = QgsFeature(target_layer.fields())
      feature.setGeometry(new_segment_geom)
      target_layer.dataProvider().addFeature(feature)
-     segment = Segment(name, FeatureContext(target_layer, feature))
+     
+     return Segment(name, FeatureContext(target_layer, feature))
+
+#TODO: fazer renderer e definição de nome do ponto
+def qgspoint_from_xypoint(target_layer: QgsVectorLayer, point: QgsPointXY) -> QgsPoint:
+
+     new_point = QgsGeometry.fromPointXY(point)
+     feature = QgsFeature(target_layer.fields())
+     feature.setGeometry(new_point)
+     target_layer.dataProvider().addFeature(feature)
+
+     return new_point.get()
 
 def filter_polygon_features(project: QgsProject) -> list[FeatureContext]:
      result_list = []

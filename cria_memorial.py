@@ -33,6 +33,7 @@ from .dialogs.cancel_dialog import CancelDialog
 from .dialogs.alert_dialog import AlertDialog
 from .models.memorial_base import MemorialBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
+from .models.memorial_xy_loteamento import MemorialXYLoteamento
 from .models.user_settings import UserSettings
 from .models.enums import DocumentFormat
 from .processing import (
@@ -40,7 +41,8 @@ from .processing import (
     process_general_info_dialog, 
     process_parcel_definition,
     process_main_parcel_dialog,
-    process_sides_definition
+    process_sides_definition,
+    process_parcel_vertex_definition
 )
 from .qgs_processing import filter_polygon_features
 from .services import doc_generator
@@ -216,7 +218,8 @@ class CriaMemorial:
             if not accepted:
                 return
 
-        self.create_memorial_p_loteamento()
+        # self.create_memorial_p_loteamento()
+        self.create_memorial_xy_loteamento()
 
     def create_memorial_p_loteamento(self):
 
@@ -284,3 +287,80 @@ class CriaMemorial:
         else:
             self.cancel_dialog.exec_()
             return
+
+
+    def create_memorial_xy_loteamento(self):
+
+        result_step_1 = process_general_info_dialog(self.user_settings, self.general_info)
+        
+        if result_step_1 is not None:
+            self.general_info = result_step_1
+        else:
+            self.cancel_dialog.exec_()
+            return
+
+        result_step_2 = process_parcel_definition(self.iface, self.feature_list)
+        if result_step_2 is not None:
+            selected_parcel, other_parcels = result_step_2
+        else:
+            self.cancel_dialog.exec_()
+            return
+
+        result_step_3 = process_main_parcel_dialog(selected_parcel)
+        if result_step_3 is not None:
+            self.main_parcel = result_step_3
+        else:
+            self.cancel_dialog.exec_()
+            return
+
+
+        result_step_4 = process_parcel_vertex_definition(self.project, self.main_parcel)
+        
+        if result_step_4 is False:
+            self.cancel_dialog.exec_()
+            return
+        
+        #TODO: inserir definição entre padrão e coordenadas aqui
+        self.memorial = MemorialXYLoteamento(
+            self.general_info, 
+            self.main_parcel, 
+            other_parcels
+        )
+
+
+        # result_step_4 = process_sides_definition(self.iface, self.project, self.memorial.main_parcel)
+        # if result_step_4 is False:
+        #     self.cancel_dialog.exec_()
+        #     return
+
+        #Processa criação de memorial
+        memorial_full_text, memorial_result = self.memorial.generate_memorial()
+        final_result_dlg = ShowResultDialog(memorial_full_text, self.user_settings)
+        
+        accepted = final_result_dlg.exec_()
+
+        if accepted:
+        
+            match self.user_settings.output_doc_format_preference:
+        
+                case DocumentFormat.PDF:
+                    doc_generator.save_as_pdf(
+                        memorial_result.heading,
+                        memorial_result.body, 
+                        memorial_result.architect_identification,
+                        final_result_dlg.new_file_name,
+                        self.user_settings.atc_logo_path,
+                        self.user_settings.main_logo_path,
+                    )
+        
+                case DocumentFormat.DOCX:
+                    doc_generator.save_as_docx(
+                        memorial_result.heading,
+                        memorial_result.body,
+                        memorial_result.architect_identification,
+                        final_result_dlg.new_file_name,
+                        self.user_settings.docx_template_path
+                    )
+        
+        else:
+            raise NotImplementedError

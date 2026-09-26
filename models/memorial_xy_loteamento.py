@@ -28,8 +28,6 @@ class MemorialXYLoteamento(MemorialXYBase):
 
     def generate_memorial(self):
 
-        self.main_parcel.define_confrontations(self.other_parcels)
-
         full_text = f"{self.heading}\n\n {self.body}\n\n{self.architect_identification}"
 
         return (full_text, CreateMemorialResult(self.heading, self.body, self.architect_identification))

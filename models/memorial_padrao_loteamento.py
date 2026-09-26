@@ -1,4 +1,3 @@
-from .memorial_base import MemorialBase
 from .memorial_padrao_base import MemorialPadraoBase
 from .full_parcel import FullParcel
 from .basic_parcel import BasicParcel

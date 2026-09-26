@@ -1,4 +1,4 @@
-from qgis.core import QgsPoint
+from qgis.core import QgsPointXY
 
 from .street import Street
 from .segment import Segment
@@ -19,7 +19,7 @@ class FullParcel(BasicParcel):
             distance_to_corner: float = 0, 
             corner_street: Street | None = None, 
             property_identifier: str = "",
-            ordered_qgs_points: list[QgsPoint] | None = None
+            ordered_qgs_points: list[QgsPointXY] | None = None
             ):
         
         super().__init__(base_parcel.name, base_parcel.block, base_parcel.site_plan_name, base_parcel.site_plan_code, base_parcel.feature_context)
