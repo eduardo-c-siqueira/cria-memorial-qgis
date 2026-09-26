@@ -1,5 +1,4 @@
 from ..utils.string_format import float_to_string_2f, check_plural
-from ..processing import get_parcel_confrontations
 from .basic_parcel import BasicParcel
 from .data_classes import FeatureContext
 
@@ -19,7 +18,11 @@ class Segment:
 
         self_geom = self.feature_context.feature.geometry()
 
-        parcel_confrontations = get_parcel_confrontations(self_geom, other_parcels)
+        parcel_confrontations = [
+            parcel.name 
+            for parcel in other_parcels 
+            if parcel.confronts_with(self_geom)
+        ]
 
         self.confrontations = [*self.confrontations, *parcel_confrontations]
 

@@ -26,8 +26,7 @@ from qgis.core import QgsSettings, QgsProject
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-
-from . import third_party
+from . import third_party #força a inicialização para reconhecimento das dependências
 from .paths import ICONS_DIR
 from .dialogs.show_result_dialog import ShowResultDialog
 from .dialogs.cancel_dialog import CancelDialog

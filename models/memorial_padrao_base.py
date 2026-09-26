@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-
 from .memorial_base import MemorialBase
 from .data_classes import GeneralInfoObject
 from .full_parcel import FullParcel

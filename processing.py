@@ -1,4 +1,4 @@
-from dialogs.street_confrontations_dialog import StreetConfrontationsDialog
+from .dialogs.street_confrontations_dialog import StreetConfrontationsDialog
 from qgis.core import (
      QgsProject, 
      QgsVectorLayer,

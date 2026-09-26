@@ -1,3 +1,5 @@
+from qgis.core import QgsGeometry
+
 from .data_classes import FeatureContext
 
 class BasicParcel:
@@ -15,6 +17,12 @@ class BasicParcel:
         else:
             return ""
 
+    def confronts_with(self, geometry: QgsGeometry) -> bool:
+
+        parcel_geom = self.feature_context.feature.geometry()
+        intersection = geometry.intersection(parcel_geom)
+        return (not intersection.isEmpty() and intersection.length() > 0)
+        
     @property
     def site_plan_identification(self):
         if self.site_plan_code and self.site_plan_code.strip() != "":

@@ -1,7 +1,6 @@
 from .street import Street
 
 from .segment import Segment
-from ..utils.string_format import number_in_full, segment_ordinal
 
 class Side:
     def __init__(self, name, segments: list[Segment]):
