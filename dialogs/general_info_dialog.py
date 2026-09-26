@@ -29,7 +29,7 @@ from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
 from .failed_validation_dialog import FailedValidationDialog
 from ..models.data_classes import GeneralInfoObject
-from ..models.enums import Gender
+from ..models.enums import Gender, MemorialType
 from ..models.user_settings import UserSettings
 from ..paths import icon_path
 
@@ -52,6 +52,11 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         self.setWindowIcon(QIcon(icon_path('aiG-icon')))
+        for memorial_type in MemorialType:
+            self.memorial_type_ComboBox.addItem(
+                memorial_type.value,
+                memorial_type
+            )
         self.gender_btn_group = QtWidgets.QButtonGroup()
         self.gender_btn_group.addButton(self.female_radioButton)
         self.gender_btn_group.addButton(self.male_radioButton)
@@ -88,6 +93,9 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
         return GeneralInfoObject(
             self.stamp, self.architect, self.architect_gender, self.cau_code
         )
+
+    def get_memorial_type(self):
+        return self.memorial_type_ComboBox.currentData()
 
     #properties
     @property

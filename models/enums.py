@@ -34,3 +34,14 @@ class SideEnum(StrEnum):
             SideEnum.RIGHT: f" pelo lado {self.value},",
             SideEnum.BACK: " pela linha dos fundos,",
         }[self]
+
+class MemorialType(StrEnum):
+
+    LOTEAMENTO_PADRAO = "Memorial Padrão Loteamento"
+    LOTEAMENTO_XY = "Memorial Coordenadas Loteamento"
+    SV_PADRAO = "Memorial Padrão Subdivisão"
+    SV_XY = "Memorial Coordenadas Subdivisão"
+    UN_PADRAO = "Memorial Padrão Unificação"
+    UN_XY = "Memorial Coordenadas Unificaçãp"
+    SVUN_PADRAO = "Memorial Padrão Subdivisão/Unificação"
+    SVUN_XY = "Memorial Coordenadas Subdivisão/Unificação"
