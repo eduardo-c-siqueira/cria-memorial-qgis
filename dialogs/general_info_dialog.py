@@ -57,6 +57,7 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
                 memorial_type.value,
                 memorial_type
             )
+        self.memorial_type_ComboBox.setCurrentIndex(-1)
         self.gender_btn_group = QtWidgets.QButtonGroup()
         self.gender_btn_group.addButton(self.female_radioButton)
         self.gender_btn_group.addButton(self.male_radioButton)
@@ -75,11 +76,27 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
                 pass
 
     def accept(self):
-        if self.gender_btn_group.checkedButton() is None:
-            self.groupBox.setStyleSheet("color: red;")
-            FailedValidationDialog("Gênero").exec_()
+
+        gender_selected = self.gender_btn_group.checkedButton() is not None
+        memorial_type_selected = self.memorial_type_ComboBox.currentIndex() != -1
+
+        warnings = []
+        
+        if not gender_selected or not memorial_type_selected:
+
+            if not gender_selected:
+                self.groupBox.setStyleSheet("color: red;")
+                warnings.append("Gênero")
+
+            if not memorial_type_selected:
+                self.memorial_type_Label.setStyleSheet("color: red;")
+                warnings.append("Tipo de memorial")
+
+            FailedValidationDialog(*warnings).exec_()
             return
+
         else:
+
             self.user_settings.last_architect_gender = self.architect_gender
             self.user_settings.last_architect_name = self.architect
             self.user_settings.last_cau_code = self.cau_code
@@ -94,7 +111,7 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
             self.stamp, self.architect, self.architect_gender, self.cau_code
         )
 
-    def get_memorial_type(self):
+    def get_memorial_type(self) -> MemorialType:
         return self.memorial_type_ComboBox.currentData()
 
     #properties

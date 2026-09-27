@@ -1,5 +1,6 @@
 from .dialogs.street_confrontations_dialog import StreetConfrontationsDialog
 from qgis.core import (
+     Qgis,
      QgsProject, 
      QgsVectorLayer,
 )
@@ -10,6 +11,7 @@ from .qgs_processing import (
      segment_from_xypoints,
      qgspoint_from_xypoint,
      zoom_to_features, 
+     set_layer_labeling
 )
 
 from .models.data_classes import FeatureContext
@@ -19,6 +21,7 @@ from .models.data_classes import GeneralInfoObject
 from .models.street import Street
 from .models.segment import Segment
 from .models.user_settings import UserSettings
+from .models.enums import MemorialType
 from .dialogs.general_info_dialog import GeneralInfoDialog
 from .dialogs.basic_parcels_wizard import BasicParcelsWizard
 from .dialogs.main_parcel_dialog import MainParcelDialog
@@ -28,14 +31,15 @@ from .utils.number_format import string_to_float
 
 
 
-def process_general_info_dialog(user_settings: UserSettings, general_info: GeneralInfoObject | None = None) -> GeneralInfoObject | None:
+def process_general_info_dialog(user_settings: UserSettings, general_info: GeneralInfoObject | None = None) -> tuple[GeneralInfoObject, MemorialType] | None:
 
      general_info_dialog = GeneralInfoDialog(user_settings)
      
      accepted = general_info_dialog.exec_()
      if accepted:
           general_info = general_info_dialog.as_general_info_object()
-          return general_info
+          memorial_type = general_info_dialog.get_memorial_type()
+          return general_info, memorial_type
      else:
           return None
 
@@ -120,8 +124,7 @@ def process_sides_definition(iface, project: QgsProject, parcel: FullParcel) -> 
 
                new_id = segments_layer.featureCount()+1
                new_name = "S"+str(new_id)
-               segment = segment_from_xypoints(segments_layer, (point_1, point_2), new_name)
-               segment.feature_context.feature.setAttributes([new_id, new_name, "undefined"])
+               segment = segment_from_xypoints(segments_layer, (point_1, point_2), new_name, new_id)
                segments.append(segment)
 
           segments_layer.setRenderer(create_sidebased_rederer())
@@ -175,8 +178,10 @@ def process_parcel_vertex_definition(project: QgsProject, parcel: FullParcel) ->
           parcel_geom = parcel.feature_context.feature.geometry()
           xy_points = parcel_geom.asMultiPolygon()[0][0]
 
-          for point in xy_points[:-1]:
-               qgspoint_from_xypoint(vertex_layer, point)
+          for index, point in enumerate(xy_points[:-1]):
+               qgspoint_from_xypoint(vertex_layer, point, index)
+
+     set_layer_labeling(vertex_layer, "id", Qgis.LabelPlacement.Line)
 
      dlg = FeaturePickerDialog(vertex_layer)
 
@@ -196,4 +201,5 @@ def process_parcel_vertex_definition(project: QgsProject, parcel: FullParcel) ->
           reordered_list = xy_points[first_index:] + xy_points[:first_index]
           parcel.ordered_qgs_points = reordered_list
 
-     return accepted
+     else:
+          return False

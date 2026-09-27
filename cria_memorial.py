@@ -35,7 +35,7 @@ from .models.memorial_base import MemorialBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
 from .models.memorial_xy_loteamento import MemorialXYLoteamento
 from .models.user_settings import UserSettings
-from .models.enums import DocumentFormat
+from .models.enums import DocumentFormat, MemorialType
 from .processing import (
     process_confrontation_definition,
     process_general_info_dialog, 
@@ -218,17 +218,23 @@ class CriaMemorial:
             if not accepted:
                 return
 
-        # self.create_memorial_p_loteamento()
-        self.create_memorial_xy_loteamento()
-
-    def create_memorial_p_loteamento(self):
-
         result_step_1 = process_general_info_dialog(self.user_settings, self.general_info)
+
         if result_step_1 is not None:
-            self.general_info = result_step_1
+            self.general_info, memorial_type = result_step_1
         else:
             self.cancel_dialog.exec_()
             return
+
+        match memorial_type:
+            
+            case MemorialType.LOTEAMENTO_PADRAO:
+                self.create_memorial_p_loteamento()
+
+            case MemorialType.LOTEAMENTO_XY:
+                self.create_memorial_xy_loteamento()
+
+    def create_memorial_p_loteamento(self):
 
         result_step_2 = process_parcel_definition(self.iface, self.feature_list)
         if result_step_2 is not None:
@@ -290,14 +296,6 @@ class CriaMemorial:
 
 
     def create_memorial_xy_loteamento(self):
-
-        result_step_1 = process_general_info_dialog(self.user_settings, self.general_info)
-        
-        if result_step_1 is not None:
-            self.general_info = result_step_1
-        else:
-            self.cancel_dialog.exec_()
-            return
 
         result_step_2 = process_parcel_definition(self.iface, self.feature_list)
         if result_step_2 is not None:

@@ -11,7 +11,9 @@ from qgis.core import (
      QgsRendererCategory,
      QgsCategorizedSymbolRenderer,
      QgsRectangle,
-     QgsPoint
+     QgsPoint,
+     QgsPalLayerSettings,
+     QgsVectorLayerSimpleLabeling,
      )
 
 from .models.segment import Segment
@@ -30,23 +32,25 @@ def new_vector_layer(reference_layer, new_layer_name, field_names_n_types: list[
                     "memory"
                )
 
-def segment_from_xypoints(target_layer: QgsVectorLayer, xy_points: tuple[QgsPointXY, QgsPointXY], name: str) -> Segment:
+def segment_from_xypoints(target_layer: QgsVectorLayer, xy_points: tuple[QgsPointXY, QgsPointXY], name: str, id: int) -> Segment:
 
      point_1, point_2 = xy_points
 
      new_segment_geom = QgsGeometry.fromPolylineXY([point_1, point_2])
      feature = QgsFeature(target_layer.fields())
      feature.setGeometry(new_segment_geom)
+     feature.setAttributes([id, name, "undefined"])
      target_layer.dataProvider().addFeature(feature)
      
      return Segment(name, FeatureContext(target_layer, feature))
 
 #TODO: fazer renderer e definição de nome do ponto
-def qgspoint_from_xypoint(target_layer: QgsVectorLayer, point: QgsPointXY) -> QgsPoint:
+def qgspoint_from_xypoint(target_layer: QgsVectorLayer, point: QgsPointXY, id: int) -> QgsPoint:
 
      new_point = QgsGeometry.fromPointXY(point)
      feature = QgsFeature(target_layer.fields())
      feature.setGeometry(new_point)
+     feature.setAttribute(0, id)
      target_layer.dataProvider().addFeature(feature)
 
      return new_point.get()
@@ -151,3 +155,12 @@ def zoom_to_features(iface, feature_contexts: list[FeatureContext]):
           extent.scale(1.2)
           iface.mapCanvas().setExtent(extent)
           iface.mapCanvas().refresh()
+
+def set_layer_labeling(layer: QgsVectorLayer, reference_field_name: str, placement: Qgis.LabelPlacement):
+
+     settings = QgsPalLayerSettings()
+
+     settings.fieldName = reference_field_name
+     settings.placement = placement
+     layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+     layer.setLabelsEnabled(True)

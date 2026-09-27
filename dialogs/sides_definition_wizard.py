@@ -27,12 +27,13 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, Qgis
+from qgis.core import Qgis
 
 from ..models.data_classes import SidesWidgetResult
 from ..models.segment import Segment
 from .failed_validation_dialog import FailedValidationDialog
 from ..paths import icon_path
+from ..qgs_processing import set_layer_labeling
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -70,8 +71,8 @@ class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
             "side_4_start": self.side_4_comboBox,
             "side_4_end": self.side_4_comboBox_2
         }
-        self.label_segments()
         self.reference_layer.startEditing()
+        self.label_segments()
         self._connect_signals()
 
     #
@@ -301,11 +302,7 @@ class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
         self.side_4_comboBox_2.activated.connect(self.on_side_4_end_selection_changed)
 
     def label_segments(self):
-        settings = QgsPalLayerSettings()
-        settings.fieldName = "name"
-        settings.placement = Qgis.LabelPlacement.Line
-        self.reference_layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
-        self.reference_layer.setLabelsEnabled(True)
+        set_layer_labeling(self.reference_layer, "name", Qgis.LabelPlacement.Line)
         self.reference_layer.triggerRepaint()
 
     def get_result(self):

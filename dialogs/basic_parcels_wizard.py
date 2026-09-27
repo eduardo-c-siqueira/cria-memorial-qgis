@@ -28,12 +28,13 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
 from PyQt5.QtCore import QMetaType
-from qgis.core import QgsField, QgsPalLayerSettings, QgsVectorLayerSimpleLabeling, Qgis
+from qgis.core import QgsField, Qgis
 from .bpw_first_page import BPWFirstPage
 from .bpw_input_page import BPWInputPage
 from .bpw_last_page import BPWLastPage
 from ..models.data_classes import FeatureContext
 from ..paths import icon_path
+from ..qgs_processing import set_layer_labeling
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -62,7 +63,7 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         self.input_pages: list[BPWInputPage] = []
         self.next_button = self.button(QtWidgets.QWizard.NextButton)
         self.next_button.setDefault(True)
-        self.setButtonText(QtWidgets.QWizard.CustomButton1, "Pular para &Revisão")
+        self.setButtonText(QtWidgets.QWizard.CustomButton1, "P&ular para Revisão")
         self.populate()
         self.rejected.connect(self.quit)
         self.accepted.connect(self.finish)
@@ -102,11 +103,8 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
             if fields.indexOf("nome_lote") == -1:
                 if layer.addAttribute(QgsField("nome_lote", QMetaType.Type.QString)):
                     layer.updateFields()
-            settings = QgsPalLayerSettings()
-            settings.fieldName = "nome_lote"
-            settings.placement = Qgis.LabelPlacement.OverPoint
-            layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
-            layer.setLabelsEnabled(True)
+
+            set_layer_labeling(layer, "nome_lote", Qgis.LabelPlacement.OverPoint)
 
     def quit(self):
         self.clean_highlights()

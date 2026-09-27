@@ -52,6 +52,7 @@ class FeaturePickerDialog(QtWidgets.QDialog, FORM_CLASS):
         self.setWindowIcon(QIcon(icon_path('aiG-icon')))
         self.layer = layer
         self.feature_picker.setLayer(layer)
+        self.feature_picker.setDisplayExpression('"id"')
         self.feature_picker.featureChanged.connect(self.highlight_selected)
 
     def highlight_selected(self, feature):
