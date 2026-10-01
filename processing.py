@@ -176,9 +176,9 @@ def process_parcel_vertex_definition(project: QgsProject, parcel: FullParcel) ->
           project.addMapLayer(vertex_layer)
 
           parcel_geom = parcel.feature_context.feature.geometry()
-          xy_points = parcel_geom.asMultiPolygon()[0][0]
+          xy_points = parcel_geom.asMultiPolygon()[0][0][:-1]
 
-          for index, point in enumerate(xy_points[:-1]):
+          for index, point in enumerate(xy_points):
                qgspoint_from_xypoint(vertex_layer, point, index)
 
      set_layer_labeling(vertex_layer, "id", Qgis.LabelPlacement.Line)

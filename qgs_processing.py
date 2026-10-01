@@ -45,15 +45,13 @@ def segment_from_xypoints(target_layer: QgsVectorLayer, xy_points: tuple[QgsPoin
      return Segment(name, FeatureContext(target_layer, feature))
 
 #TODO: fazer renderer e definição de nome do ponto
-def qgspoint_from_xypoint(target_layer: QgsVectorLayer, point: QgsPointXY, id: int) -> QgsPoint:
+def qgspoint_from_xypoint(target_layer: QgsVectorLayer, point: QgsPointXY, id: int):
 
      new_point = QgsGeometry.fromPointXY(point)
      feature = QgsFeature(target_layer.fields())
      feature.setGeometry(new_point)
      feature.setAttribute(0, id)
      target_layer.dataProvider().addFeature(feature)
-
-     return new_point.get()
 
 def filter_polygon_features(project: QgsProject) -> list[FeatureContext]:
      result_list = []
