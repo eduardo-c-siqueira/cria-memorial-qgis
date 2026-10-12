@@ -74,6 +74,17 @@ class UserSettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.main_logo_QgsFileWidget.setFilePath(self.user_settings.main_logo_path)
         self.docx_template_QgsFileWidget.setFilePath(self.user_settings.docx_template_path)
 
+        textlines = self.user_settings.pdf_header_textlines
+
+        self.lineEdit_1.setText(textlines[0])
+        self.lineEdit_2.setText(textlines[1])
+        self.lineEdit_3.setText(textlines[2])
+        self.lineEdit_4.setText(textlines[3])
+        self.lineEdit_5.setText(textlines[4])
+        self.lineEdit_6.setText(textlines[5])
+        self.lineEdit_7.setText(textlines[6])
+        self.lineEdit_8.setText(textlines[7])
+
     def save_settings(self):
 
         match self.format_preference_btn_group.checkedButton():
@@ -87,3 +98,13 @@ class UserSettingsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.user_settings.atc_logo_path = self.atc_logo_QgsFileWidget.filePath()
         self.user_settings.main_logo_path = self.main_logo_QgsFileWidget.filePath()
         self.user_settings.docx_template_path = self.docx_template_QgsFileWidget.filePath()
+        self.user_settings.pdf_header_textlines = [
+            self.lineEdit_1.text(),
+            self.lineEdit_2.text(),
+            self.lineEdit_3.text(),
+            self.lineEdit_4.text(),
+            self.lineEdit_5.text(),
+            self.lineEdit_6.text(),
+            self.lineEdit_7.text(),
+            self.lineEdit_8.text(),
+        ]

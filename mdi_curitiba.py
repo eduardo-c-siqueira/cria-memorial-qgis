@@ -276,8 +276,7 @@ class MdiCuritiba:
                             memorial_result.body, 
                             memorial_result.architect_identification,
                             final_result_dlg.new_file_name,
-                            self.user_settings.atc_logo_path,
-                            self.user_settings.main_logo_path,
+                            self.user_settings
                         )
                     case DocumentFormat.DOCX:
                         doc_generator.save_as_docx(
@@ -347,8 +346,7 @@ class MdiCuritiba:
                         memorial_result.body, 
                         memorial_result.architect_identification,
                         final_result_dlg.new_file_name,
-                        self.user_settings.atc_logo_path,
-                        self.user_settings.main_logo_path,
+                        self.user_settings
                     )
         
                 case DocumentFormat.DOCX:

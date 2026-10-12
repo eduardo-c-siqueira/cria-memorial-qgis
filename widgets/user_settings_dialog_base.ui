@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>365</height>
+    <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>330</y>
+     <y>550</y>
      <width>621</width>
      <height>32</height>
     </rect>
@@ -48,7 +48,7 @@
      <x>10</x>
      <y>170</y>
      <width>611</width>
-     <height>141</height>
+     <height>381</height>
     </rect>
    </property>
    <property name="title">
@@ -60,7 +60,7 @@
       <x>10</x>
       <y>20</y>
       <width>591</width>
-      <height>111</height>
+      <height>351</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -75,11 +75,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QgsFileWidget" name="main_logo_QgsFileWidget">
-       <property name="fileWidgetButtonVisible">
+      <widget class="QgsFileWidget" name="main_logo_QgsFileWidget" native="true">
+       <property name="fileWidgetButtonVisible" stdset="0">
         <bool>true</bool>
        </property>
-       <property name="filter">
+       <property name="filter" stdset="0">
         <string/>
        </property>
       </widget>
@@ -92,18 +92,111 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QgsFileWidget" name="atc_logo_QgsFileWidget">
-       <property name="filter">
+      <widget class="QgsFileWidget" name="atc_logo_QgsFileWidget" native="true">
+       <property name="filter" stdset="0">
         <string/>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="0" colspan="2">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>TEXTO PARA CABEÇALHO, LATERAL DIREITA</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Linha 1</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Linha 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Linha 3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Linha 4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Linha 5</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Linha 6</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>Linha 7</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Linha 8 </string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
       <widget class="QRadioButton" name="pdf_default_radioButton">
        <property name="text">
         <string>Método preferencial</string>
        </property>
       </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="lineEdit_1"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="lineEdit_2"/>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="lineEdit_3"/>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLineEdit" name="lineEdit_4"/>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLineEdit" name="lineEdit_5"/>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLineEdit" name="lineEdit_6"/>
+     </item>
+     <item row="11" column="1">
+      <widget class="QLineEdit" name="lineEdit_7"/>
+     </item>
+     <item row="12" column="1">
+      <widget class="QLineEdit" name="lineEdit_8"/>
      </item>
     </layout>
    </widget>
@@ -141,8 +234,8 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QgsFileWidget" name="docx_template_QgsFileWidget">
-       <property name="filter">
+      <widget class="QgsFileWidget" name="docx_template_QgsFileWidget" native="true">
+       <property name="filter" stdset="0">
         <string>Documentos Word 2007 + (*.docx)</string>
        </property>
       </widget>
