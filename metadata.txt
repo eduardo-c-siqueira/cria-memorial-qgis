@@ -3,14 +3,14 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Criação Memorial Teste
+name=Memorial Fácil
 qgisMinimumVersion=3.0
-description=Teste de desenvolvimento para criação de memoriais de loteamento
-version=0.1
-author=Eduardo C. Siqueira
+description=Plugin para automatizar a criação de memoriais segundo padrão utilizado em Curitiba-PR
+version=0.2.0
+author=Eduardo da Costa Siqueira
 email=eduardo.edu28@gmail.com
 
-about=Automatização para criar memoriais no padrão fornecido, utilizando cruzamento de dados das camadas e input do usuário.
+about=Automatização para criar memoriais no padrão fornecido, utilizando cruzamento de dados das camadas e input do usuário.\n\nEste programa é um software livre, licenciado sob os termos da GNU General Public License v3 (GPLv3) ou posterior.
 
 tracker=https://github.com/eduardo-c-siqueira/cria-memorial-qgis/issues
 repository=https://github.com/eduardo-c-siqueira/cria-memorial-qgis

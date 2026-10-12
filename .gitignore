@@ -6,8 +6,8 @@ lixeira/
 __pycache__/
 *.pyc
 
-dialogs/test_dialog.py
-dialogs/test_dialog_base.ui
+widgets/test_dialog.py
+widgets/test_dialog_base.ui
 tests.py
 
 third_party/python_docx-1.2.0.dist-info/METADATA

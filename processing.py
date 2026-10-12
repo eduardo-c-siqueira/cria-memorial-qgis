@@ -1,4 +1,4 @@
-from .dialogs.street_confrontations_dialog import StreetConfrontationsDialog
+from .widgets.street_confrontations_dialog import StreetConfrontationsDialog
 from qgis.core import (
      Qgis,
      QgsProject, 
@@ -22,11 +22,11 @@ from .models.street import Street
 from .models.segment import Segment
 from .models.user_settings import UserSettings
 from .models.enums import MemorialType
-from .dialogs.general_info_dialog import GeneralInfoDialog
-from .dialogs.basic_parcels_wizard import BasicParcelsWizard
-from .dialogs.main_parcel_dialog import MainParcelDialog
-from .dialogs.sides_definition_wizard import SidesDefinitionWizard
-from .dialogs.feature_picker_dialog import FeaturePickerDialog
+from .widgets.general_info_dialog import GeneralInfoDialog
+from .widgets.basic_parcels_wizard import BasicParcelsWizard
+from .widgets.main_parcel_dialog import MainParcelDialog
+from .widgets.sides_definition_wizard import SidesDefinitionWizard
+from .widgets.feature_picker_dialog import FeaturePickerDialog
 from .utils.number_format import string_to_float
 
 

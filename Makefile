@@ -1,11 +1,11 @@
 #/***************************************************************************
-# CriaMemorial
+# MdiCuritiba
 #
-# Teste de desenvolvimento para criação de memoriais de loteamento
+# Plugin para automatizar a criação de memoriais segundo padrão utilizado em Curitiba-PR
 #							 -------------------
 #		begin				: 2026-07-30
 #		git sha				: $Format:%H$
-#		copyright			: (C) 2026 by Eduardo C. Siqueira
+#		copyright			: (C) 2026 by Eduardo da Costa Siqueira
 #		email				: eduardo.edu28@gmail.com
 # ***************************************************************************/
 #
@@ -13,7 +13,7 @@
 # *																		 *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU General Public License as published by  *
-# *   the Free Software Foundation; either version 2 of the License, or	 *
+# *   the Free Software Foundation; either version 3 of the License, or	 *
 # *   (at your option) any later version.								   *
 # *																		 *
 # ***************************************************************************/
@@ -38,19 +38,43 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	cria_memorial.py cria_memorial_dialog.py
+	mdi_curitiba.py mdi_curitiba_dialog.py
 
-PLUGINNAME = cria_memorial
+PLUGINNAME = mdi_curitiba
 
 PY_FILES = \
 	__init__.py \
-	cria_memorial.py cria_memorial_dialog.py
+	paths.py mdi_curitiba.py processing.py qgs_processing.py
 
-UI_FILES = cria_memorial_dialog_base.ui
+UI_FILES = failed_validation_dialog_base.ui
+bpw_last_page_base.ui
+cancel_dialog_base.ui
+bpw_input_page_base.ui
+test_dialog_base.ui
+main_parcel_dialog_base.ui
+basic_parcels_wizard_base.ui
+bpw_first_page_base.ui
+street_confrontations_tabwidget_container_base.ui
+show_result_dialog_base.ui
+general_info_dialog_base.ui
+street_confrontations_dialog_base.ui
+street_confrontations_widget_base.ui
+sides_definition_wizard_base.ui
+user_settings_dialog_base.ui
+alert_dialog_base.ui
+feature_picker_dialog_base.ui
 
-EXTRAS = metadata.txt icon.png
 
-EXTRA_DIRS =
+EXTRAS = metadata.txt resources\icons\aiG-icon.png
+
+EXTRA_DIRS = i18n
+resources
+models
+utils
+services
+third_party
+LICENSES
+widgets
 
 PEP8EXCLUDE=pydev,conf.py,third_party,ui
 
