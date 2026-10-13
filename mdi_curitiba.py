@@ -31,6 +31,7 @@ from .paths import ICONS_DIR
 from .widgets.show_result_dialog import ShowResultDialog
 from .widgets.cancel_dialog import CancelDialog
 from .widgets.alert_dialog import AlertDialog
+from .widgets.user_settings_dialog import UserSettingsDialog
 from .models.memorial_base import MemorialBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
 from .models.memorial_xy_loteamento import MemorialXYLoteamento
@@ -77,9 +78,13 @@ class MdiCuritiba:
             self.translator.load(locale_path)
             QCoreApplication.installTranslator(self.translator)
 
+        # Inicializando objeto de configurações e janelas fixas
+        self.user_settings = UserSettings()
+        self.cancel_dialog = CancelDialog()
+
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Criação Memorial Teste')
+        self.menu = self.tr(u'&MDI Curitiba')
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -185,6 +190,13 @@ class MdiCuritiba:
             callback=self.run,
             parent=self.iface.mainWindow())
 
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Configurações'),
+            callback=self.open_settings_dialog,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False)
+
         # will be set False in run()
         self.first_start = True
 
@@ -203,8 +215,7 @@ class MdiCuritiba:
         if self.first_start == True:
             self.first_start = False
             self.general_info = None
-            self.cancel_dialog = CancelDialog()
-            self.user_settings = UserSettings()
+
         
         self.project = QgsProject.instance()
 
@@ -268,6 +279,7 @@ class MdiCuritiba:
             memorial_full_text, memorial_result = self.memorial.generate_memorial()
             final_result_dlg = ShowResultDialog(memorial_full_text, self.user_settings)
             accepted = final_result_dlg.exec_()
+
             if accepted:
                 match self.user_settings.output_doc_format_preference:
                     case DocumentFormat.PDF:
@@ -309,7 +321,6 @@ class MdiCuritiba:
         else:
             self.cancel_dialog.exec_()
             return
-
 
         result_step_4 = process_parcel_vertex_definition(self.project, self.main_parcel)
         
@@ -360,3 +371,9 @@ class MdiCuritiba:
         
         else:
             raise NotImplementedError
+
+
+    def open_settings_dialog(self):
+
+        dlg = UserSettingsDialog(self.user_settings)
+        dlg.exec_()
