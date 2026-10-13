@@ -49,7 +49,9 @@ No momento há duas opções disponíveis para instalação: a partir do arquivo
 
 3. Clique no botão **Adicionar...** em "Repositórios de Complementos", logo abaixo da lista de repositórios.
 
-4. Defina um nome e cole a URL *https://github.com/eduardo-c-siqueira/cria-memorial-qgis/plugins.xml*.
+4. Defina um nome e cole a URL *https://eduardo-c-siqueira.github.io/cria-memorial-qgis/plugins.xml*.
+
+5. Ainda no painel **Opções**, marque a caixa *Mostrar também os complementos experimentais* (este passo é necessário neste momento, pois o plugin ainda está em versão de testes).
 
 O plugin passará a aparecer na aba **Não Instalados** ou **Tudo** do gerenciador do QGIS.
 
