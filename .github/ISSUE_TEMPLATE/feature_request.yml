@@ -1,0 +1,22 @@
+name: 💡 Sugestão de Funcionalidade
+description: Sugira uma nova ideia ou melhoria para o MDI Curitiba.
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qual problema ou necessidade essa funcionalidade resolve?
+      description: Descreva o contexto ou a dificuldade atual.
+      placeholder: Exemplo: Hoje é necessário exportar manualmente os dados antes de processar...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solucao
+    attributes:
+      label: Solução Proposta
+      description: Como você imagina que essa nova opção deva funcionar dentro do plugin?
+      placeholder: Adicionar um botão de exportação direta para GeoJSON.
+    validations:
+      required: true

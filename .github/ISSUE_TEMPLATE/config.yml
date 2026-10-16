@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentação e Guia (README)
+    url: https://github.com/eduardo-c-siqueira/cria-memorial-qgis/blob/main/README.md
+    about: Consulte as instruções de instalação e uso no README do projeto.
+  - name: Contato via E-mail
+    url: mfceduardosiqueira@gmail.com
+    about: Para dúvidas específicas ou assuntos não listados nas Issues.

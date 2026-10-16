@@ -1,0 +1,64 @@
+name: 🐛 Relato de Bug
+description: Encontrou um problema no plugin MDI Curitiba? Crie um relatório para podermos corrigir.
+title: "[BUG]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por informar um problema no plugin **MDI Curitiba**!
+        Preencha os campos abaixo com o máximo de detalhes possível.
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descrição do Problema
+      description: Explique o que aconteceu de forma clara e objetiva.
+      placeholder: Exemplo: Ao executar a ferramenta de análise, o QGIS trava e exibe uma mensagem de erro.
+    validations:
+      required: true
+
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passo a Passo para Reproduzir
+      description: Descreva os passos devem ser seguidos para o erro acontecer novamente (importante para testes de verificação para correção do problema):
+      placeholder: |
+        1. Abra a camada X no QGIS
+        2. Clique no ícone do plugin MDI Curitiba
+        3. Selecione a opção Y e clique em Ok
+        4. O erro é exibido
+    validations:
+      required: true
+
+  - type: dropdown
+    id: qgis_version
+    attributes:
+      label: Versão do QGIS
+      options:
+        - QGIS 3.44.12 ou superior
+        - Outra versão inferior (Não suportada)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os_system
+    attributes:
+      label: Sistema Operacional
+      options:
+        - Windows 11
+        - Windows 10
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: python_log
+    attributes:
+      label: Log de Erro do Python (Traceback)
+      description: |
+        Cole aqui o erro retornado no QGIS. 
+        Vá em: Ver > Painéis > Mensagens do Log > Aba "Python" ou "Plugin".
+      render: python
+    validations:
+      required: false
