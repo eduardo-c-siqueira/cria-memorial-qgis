@@ -10,7 +10,7 @@
 
 __author__ = 'eduardo.edu28@gmail.com'
 __date__ = '2026-07-30'
-__copyright__ = 'Copyright 2026, Eduardo C. Siqueira'
+__copyright__ = 'Copyright 2026, Eduardo da Costa Siqueira'
 
 import unittest
 

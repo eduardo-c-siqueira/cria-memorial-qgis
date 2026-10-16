@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugins>
+  <pyqgis_plugin name="MDI Curitiba" version="0.2.0">
+    <description>Memorial descritivo inteligente segundo padrão utilizado em Curitiba-PR</description>
+    <about>Automatização para criar memoriais no padrão fornecido, utilizando cruzamento de dados das camadas e input do usuário.</about>
+    <version>0.2.0</version>
+    <qgis_minimum_version>3.44.0</qgis_minimum_version>
+    <qgis_maximum_version>3.99.0</qgis_maximum_version>
+    <homepage>https://github.com/eduardo-c-siqueira/cria-memorial-qgis</homepage>
+    <file_name>mdi_curitiba.zip</file_name>
+    <icon>https://eduardo-c-siqueira.github.io/cria-memorial-qgis/resources\icons\aiG-icon.png</icon>
+    <author_name>Eduardo da Costa Siqueira</author_name>
+    <download_url>https://github.com/eduardo-c-siqueira/cria-memorial-qgis/releases/download/v0.2.0/mdi_curitiba.zip</download_url>
+    <uploaded_by>Eduardo da Costa Siqueira</uploaded_by>
+    <experimental>True</experimental>
+    <deprecated>False</deprecated>
+  </pyqgis_plugin>
+</plugins>

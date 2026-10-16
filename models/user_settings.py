@@ -42,6 +42,15 @@ class UserSettings:
     @main_logo_path.setter
     def main_logo_path(self, value: str):
         self.settings.setValue("paths/main_logo", value)
+    
+    # texto do cabeçalho para pdf
+    @property
+    def pdf_header_textlines(self) -> list[str]:
+        return self.settings.value("pdf_header/textlines", ['','','','','','','',''])
+
+    @pdf_header_textlines.setter
+    def pdf_header_textlines(self, value: list[str]):
+        self.settings.setValue("pdf_header/textlines", value)
 
     # último nome de arquitetx preenchido 
     @property

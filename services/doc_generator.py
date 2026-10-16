@@ -9,11 +9,11 @@ from adapted_docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 
 from ..models.user_settings import UserSettings
 
-def save_as_pdf(heading, body, architect_identification, new_file_path, caminho_logo1='', caminho_logo2=''):
+def save_as_pdf(heading, body, architect_identification, new_file_path, user_settings: UserSettings):
 
-    user_settings = UserSettings()
     atc_logo_path = user_settings.atc_logo_path
     main_logo_path = user_settings.main_logo_path
+    header_textlines = user_settings.pdf_header_textlines
 
     document = QTextDocument()
 
@@ -124,16 +124,16 @@ def save_as_pdf(heading, body, architect_identification, new_file_path, caminho_
                     "
                 >
                     <div class="texto-cabecalho" style="font-size: 5pt; line-height: 0.5;" >
-                        Prefeitura Municipal de Curitiba<br>
+                        {header_textlines[0]}<br>
                         <br>
-                        Companhia de Habitação<br>
-                        Popular de Curitiba<br>
+                        {header_textlines[1]}<br>
+                        {header_textlines[2]}<br>
                         <br>
-                        Rua Barão do Rio Branco, 45<br>
-                        80010-180  Centro   Curitiba  PR<br>
-                        secretariageralcohab@curitiba.pr.gov.br<br>
-                        Tel.: 41 3221-8133 <br>
-                        www.cohabct.com.br<br>
+                        {header_textlines[3]}<br>
+                        {header_textlines[4]}<br>
+                        {header_textlines[5]}<br>
+                        {header_textlines[6]}<br>
+                        {header_textlines[7]}<br>
                     </div>
                 </td>
 
