@@ -8,7 +8,7 @@ body:
     attributes:
       label: Qual problema ou necessidade essa funcionalidade resolve?
       description: Descreva o contexto ou a dificuldade atual.
-      placeholder: Exemplo: Hoje é necessário exportar manualmente os dados antes de processar...
+      placeholder: "Exemplo: Hoje é necessário exportar manualmente os dados antes de processar..."
     validations:
       required: true
 

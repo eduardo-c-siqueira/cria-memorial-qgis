@@ -14,7 +14,7 @@ body:
     attributes:
       label: Descrição do Problema
       description: Explique o que aconteceu de forma clara e objetiva.
-      placeholder: Exemplo: Ao executar a ferramenta de análise, o QGIS trava e exibe uma mensagem de erro.
+      placeholder: "Exemplo: Ao executar a ferramenta de análise, o QGIS trava e exibe uma mensagem de erro."
     validations:
       required: true
 

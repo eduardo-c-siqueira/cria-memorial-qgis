@@ -1,4 +1,4 @@
-from qgis.core import QgsGeometry
+from qgis.core import QgsGeometry, QgsPointXY
 
 from .memorial_base import MemorialBase
 from .data_classes import GeneralInfoObject
@@ -27,8 +27,8 @@ class MemorialXYBase(MemorialBase):
             if point_1 == points[0]:
 
                 descriptions.append((
-                    f" partindo no ponto P0PP (coordenadas N: {point_1.y()} e E: {point_1.x()})"
-                    f" até o ponto P01 (coordenadas N: {point_2.y()} e E: {point_2.x()})"
+                    f" partindo no ponto P0PP ({describe_coordinates(point_1)})"
+                    f" até o ponto P01 ({describe_coordinates(point_2)})"
                     f" apresenta {string_format.float_to_string_2f(measure)} metro{string_format.check_plural(measure > 1)}"
                     f" de frente para a {self.main_parcel.street.description}"
                 ))
@@ -55,9 +55,22 @@ class MemorialXYBase(MemorialBase):
 
                     descriptions.append((
                         f" do ponto P0{str(index)}"
-                        f" até o ponto P0{str(index+1)} (coordenadas N: {point_2.y()} e E: {point_2.x()})"
+                        f" até o ponto P0{str(index+1)} ({describe_coordinates(point_2)})"
                         f" apresenta {string_format.float_to_string_2f(measure)} metro{string_format.check_plural(measure > 1)}"
                         f"{confrontations_description}"
                     ))
 
         return "; ".join(descriptions)
+
+
+def describe_coordinates(point: QgsPointXY) -> str:
+
+    def format_coordinate(value: float) -> str:
+        return string_format.float_to_string_2f(
+            string_format.apply_thousands_separator(value)
+        )
+
+    northing = format_coordinate(point.y())
+    easting = format_coordinate(point.x())
+
+    return f"coordenadas N: {northing} e E: {easting}"
