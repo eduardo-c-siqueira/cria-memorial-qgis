@@ -14,7 +14,7 @@ body:
     attributes:
       label: Descrição do Problema
       description: Explique o que aconteceu de forma clara e objetiva.
-      placeholder: Exemplo: Ao executar a ferramenta de análise, o QGIS trava e exibe uma mensagem de erro.
+      placeholder: "Exemplo: Ao executar a ferramenta de análise, o QGIS trava e exibe uma mensagem de erro."
     validations:
       required: true
 
@@ -22,7 +22,7 @@ body:
     id: passos
     attributes:
       label: Passo a Passo para Reproduzir
-      description: Descreva os passos devem ser seguidos para o erro acontecer novamente (importante para testes de verificação para correção do problema):
+      description: "Descreva os passos devem ser seguidos para o erro acontecer novamente (importante para testes de verificação para correção do problema):"
       placeholder: |
         1. Abra a camada X no QGIS
         2. Clique no ícone do plugin MDI Curitiba

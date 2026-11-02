@@ -21,5 +21,22 @@ def segment_ordinal(index: int):
 def float_to_string_2f(num: float) -> str:
     return f"{num:.2f}".replace(".",",")
 
+def apply_thousands_separator(num: str) -> str:
+
+    integer_str, separator, decimals = num.partition(",")
+    
+    sign = ""
+    if integer_str.startswith(("-", "+")):
+        sign, integer_str = integer_str[0], integer_str[1:]
+
+    groups = []
+    while integer_str:
+        groups.append(integer_str[-3:])
+        integer_str = integer_str[:-3]
+
+    result = ".".join(reversed(groups))
+
+    return sign + result + separator + decimals
+
 def check_plural(condition: bool):
     return "s" if condition else ""

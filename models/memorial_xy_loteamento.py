@@ -22,7 +22,7 @@ class MemorialXYLoteamento(MemorialXYBase):
             f" de forma {self.main_parcel.shape}"
             " e com as seguintes medidas, características e confrontações do ponto de vista de quem da frente o observa:"
             f"{self.describe_all_segments()}"
-            f" fechando o perímetro e perfazen a área total de {self.main_parcel.area} m²."
+            f" fechando o perímetro e perfazendo a área total de {self.main_parcel.area} m²."
             f"\n\n{self.main_parcel.print_property_identifier()}"
         )
 
