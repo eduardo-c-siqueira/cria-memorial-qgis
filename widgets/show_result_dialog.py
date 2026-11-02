@@ -30,6 +30,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from .user_settings_dialog import UserSettingsDialog
 from .alert_dialog import AlertDialog
+from .confirm_action_dialog import ConfirmActionDialog
 from ..models.user_settings import UserSettings
 from ..models.enums import DocumentFormat
 from ..models.data_classes import GeneralInfoObject
@@ -92,3 +93,11 @@ class ShowResultDialog(QtWidgets.QDialog, FORM_CLASS):
             
         self.set_file_name(format_preference)
         super().accept()
+
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()
+            

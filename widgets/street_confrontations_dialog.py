@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 from ..models.street import Street
 from ..models.sides import Front, Side
 from .street_confrontations_tabwidget_container import StreetConfrontationsTabWidgetContainer #tabs s.name: tab
+from .confirm_action_dialog import ConfirmActionDialog
 from ..paths import icon_path
 from ..utils.string_format import format_name
 
@@ -95,3 +96,10 @@ class StreetConfrontationsDialog(QtWidgets.QDialog, FORM_CLASS):
     def accept(self):
         self.process_results()
         super().accept()
+        
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()

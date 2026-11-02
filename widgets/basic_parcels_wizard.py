@@ -32,6 +32,7 @@ from qgis.core import QgsField, Qgis
 from .bpw_first_page import BPWFirstPage
 from .bpw_input_page import BPWInputPage
 from .bpw_last_page import BPWLastPage
+from .confirm_action_dialog import ConfirmActionDialog
 from ..models.data_classes import FeatureContext
 from ..paths import icon_path
 from ..qgs_processing import set_layer_labeling
@@ -143,3 +144,10 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         if which == QtWidgets.QWizard.CustomButton1:
             while self.nextId() != -1:
                 self.next()
+
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()

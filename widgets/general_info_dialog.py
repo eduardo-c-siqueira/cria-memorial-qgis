@@ -28,6 +28,7 @@ from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
 from .failed_validation_dialog import FailedValidationDialog
+from .confirm_action_dialog import ConfirmActionDialog
 from ..models.data_classes import GeneralInfoObject
 from ..models.enums import Gender, MemorialType
 from ..models.user_settings import UserSettings
@@ -101,6 +102,13 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
             self.user_settings.last_architect_name = self.architect
             self.user_settings.last_cau_code = self.cau_code
             super().accept()
+
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()
 
     def as_general_info_object(self):
 

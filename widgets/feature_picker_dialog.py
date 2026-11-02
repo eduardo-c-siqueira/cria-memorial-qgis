@@ -29,6 +29,7 @@ from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsVectorLayer, QgsFeature
 
+from .confirm_action_dialog import ConfirmActionDialog
 from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
@@ -61,3 +62,10 @@ class FeaturePickerDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def get_selected_feature(self) -> QgsFeature:
         return self.feature_picker.feature()
+
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()

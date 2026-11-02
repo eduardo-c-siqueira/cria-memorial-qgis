@@ -30,6 +30,7 @@ from qgis.PyQt.QtGui import QIcon
 from ..models.data_classes import MainParcelDialogResult
 from ..models.basic_parcel import BasicParcel
 from .failed_validation_dialog import FailedValidationDialog
+from .confirm_action_dialog import ConfirmActionDialog
 from ..paths import icon_path
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
@@ -94,3 +95,10 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def clean_highlight(self):
         self.parcel.feature_context.layer.removeSelection()
+
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()

@@ -32,6 +32,7 @@ from qgis.core import Qgis
 from ..models.data_classes import SidesWidgetResult
 from ..models.segment import Segment
 from .failed_validation_dialog import FailedValidationDialog
+from .confirm_action_dialog import ConfirmActionDialog
 from ..paths import icon_path
 from ..qgs_processing import set_layer_labeling
 
@@ -371,3 +372,11 @@ class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
         end_segment_index = self.reordered_segment_list.index(end_segment)
 
         return self.reordered_segment_list[start_segment_index:end_segment_index+1]
+
+    def reject(self):
+
+        confirmed = ConfirmActionDialog(self).exec_()
+
+        if confirmed:
+            super().reject()
+            
