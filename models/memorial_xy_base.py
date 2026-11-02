@@ -66,8 +66,8 @@ class MemorialXYBase(MemorialBase):
 def describe_coordinates(point: QgsPointXY) -> str:
 
     def format_coordinate(value: float) -> str:
-        return string_format.float_to_string_2f(
-            string_format.apply_thousands_separator(value)
+        return string_format.apply_thousands_separator(
+            string_format.float_to_string_2f(value)
         )
 
     northing = format_coordinate(point.y())
