@@ -29,6 +29,7 @@ from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
 from ..models.data_classes import MainParcelDialogResult
 from ..models.basic_parcel import BasicParcel
+from ..models.user_settings import UserSettings
 from .failed_validation_dialog import FailedValidationDialog
 from .confirm_action_dialog import ConfirmActionDialog
 from ..paths import icon_path
@@ -42,7 +43,7 @@ FORM_CLASS, _ = uic.loadUiType(
     import_from='mdi_curitiba')
 
 class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self, parcel: BasicParcel, parent=None):
+    def __init__(self, parcel: BasicParcel, user_settings: UserSettings, parent=None):
         """Constructor."""
         super(MainParcelDialog, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
@@ -52,11 +53,13 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         self.setWindowIcon(QIcon(icon_path('aiG-icon')))
+        self.user_settings = user_settings
         self.parcel = parcel
         self.finished.connect(self.clean_highlight)
         parcel.feature_context.layer.select(parcel.feature_context.feature.id())
 
         self.main_label.setText(f"Complemente as informações do lote principal ({parcel.name})")
+        self.load_data()
 
         self.street_side_btn_group = QtWidgets.QButtonGroup()
         self.street_side_btn_group.addButton(self.even_numbered_side_radioButton)
@@ -66,10 +69,45 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
         self.shape_btn_group.addButton(self.regular_shape_radioButton)
         self.shape_btn_group.addButton(self.irregular_shape_radioButton)
 
+    def load_data(self):
+
+        if self.user_settings.recycle_district:
+
+            self.district_lineEdit.setText(self.user_settings.last_district)
+
+        if self.user_settings.recycle_street:
+            
+            street, code = self.user_settings.last_street
+            
+            self.main_street_name_lineEdit.setText(street)
+            self.main_street_code_lineEdit.setText(code)
+
+        if self.user_settings.recycle_corner_street:
+            
+            street, code = self.user_settings.last_corner_street
+            
+            self.cross_street_name_lineEdit.setText(street)
+            self.cross_street_code_lineEdit.setText(code)
+
+    def save_data(self):
+
+        self.user_settings.set_last_district(self.district_lineEdit.text())
+
+        self.user_settings.set_last_street(
+            self.main_street_name_lineEdit.text(),
+            self.main_street_code_lineEdit.text(),
+        )
+
+        self.user_settings.set_last_corner_street(
+            self.cross_street_name_lineEdit.text(),
+            self.cross_street_code_lineEdit.text(),
+        )
+
     def accept(self):
         shape_selected = self.shape_btn_group.checkedButton() is not None
         street_side_selected = self.street_side_btn_group.checkedButton() is not None
         if shape_selected and street_side_selected:
+            self.save_data()
             super().accept()
         else:
             missing_info = []

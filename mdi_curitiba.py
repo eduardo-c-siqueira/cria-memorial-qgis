@@ -32,6 +32,7 @@ from .widgets.show_result_dialog import ShowResultDialog
 from .widgets.cancel_dialog import CancelDialog
 from .widgets.alert_dialog import AlertDialog
 from .widgets.user_settings_dialog import UserSettingsDialog
+from .widgets.data_recycling_dialog import DataRecyclingDialog
 from .models.memorial_base import MemorialBase
 from .models.memorial_padrao_loteamento import MemorialPadraoLoteamento
 from .models.memorial_xy_loteamento import MemorialXYLoteamento
@@ -237,24 +238,32 @@ class MdiCuritiba:
             self.cancel_dialog.exec_()
             return
 
-        match memorial_type:
-            
-            case MemorialType.LOTEAMENTO_PADRAO:
-                self.create_memorial_p_loteamento()
+        recycling_options_confirmed = DataRecyclingDialog(self.user_settings).exec_()
 
-            case MemorialType.LOTEAMENTO_XY:
-                self.create_memorial_xy_loteamento()
+        if recycling_options_confirmed:
+            match memorial_type:
+                
+                case MemorialType.LOTEAMENTO_PADRAO:
+                    self.create_memorial_p_loteamento()
+
+                case MemorialType.LOTEAMENTO_XY:
+                    self.create_memorial_xy_loteamento()
+
+        else:
+            
+            self.cancel_dialog.exec_()
+            return
 
     def create_memorial_p_loteamento(self):
 
-        result_step_2 = process_parcel_definition(self.iface, self.feature_list)
+        result_step_2 = process_parcel_definition(self.iface, self.feature_list, self.user_settings)
         if result_step_2 is not None:
             selected_parcel, other_parcels = result_step_2
         else:
             self.cancel_dialog.exec_()
             return
 
-        result_step_3 = process_main_parcel_dialog(selected_parcel)
+        result_step_3 = process_main_parcel_dialog(selected_parcel, self.user_settings)
         if result_step_3 is not None:
             self.main_parcel = result_step_3
         else:
@@ -308,14 +317,14 @@ class MdiCuritiba:
 
     def create_memorial_xy_loteamento(self):
 
-        result_step_2 = process_parcel_definition(self.iface, self.feature_list)
+        result_step_2 = process_parcel_definition(self.iface, self.feature_list, self.user_settings)
         if result_step_2 is not None:
             selected_parcel, other_parcels = result_step_2
         else:
             self.cancel_dialog.exec_()
             return
 
-        result_step_3 = process_main_parcel_dialog(selected_parcel)
+        result_step_3 = process_main_parcel_dialog(selected_parcel, self.user_settings)
         if result_step_3 is not None:
             self.main_parcel = result_step_3
         else:

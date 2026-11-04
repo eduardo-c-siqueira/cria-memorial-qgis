@@ -27,6 +27,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtCore import QTimer
+from ..models.user_settings import UserSettings
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(
@@ -38,7 +39,7 @@ FORM_CLASS, _ = uic.loadUiType(
 
 
 class BPWFirstPage(QtWidgets.QWizardPage, FORM_CLASS):
-    def __init__(self, parent=None):
+    def __init__(self, user_settings: UserSettings, parent=None):
         """Constructor."""
         super(BPWFirstPage, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
@@ -47,10 +48,37 @@ class BPWFirstPage(QtWidgets.QWizardPage, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
         self.block_lineEdit.editingFinished.connect(self.update_block)
         self.site_plan_lineEdit.editingFinished.connect(self.update_site_plan)
         self.site_plan_code_lineEdit.editingFinished.connect(self.update_site_plan_code)
 
+    def save_data(self, user_settings: UserSettings):
+
+        user_settings.set_last_block(self.block_lineEdit.text())
+
+        user_settings.set_last_site_plan(
+            self.site_plan_lineEdit.text(),
+            self.site_plan_code_lineEdit.text()
+        )
+
+    def load_data(self, user_settings: UserSettings):
+
+        if user_settings.recycle_block:
+
+            self.block_lineEdit.setText(user_settings.last_block)
+            self.update_block()
+
+        if user_settings.recycle_site_plan:
+
+            plan, code = user_settings.last_site_plan
+
+            self.site_plan_lineEdit.setText(plan)
+            self.update_site_plan()
+
+            self.site_plan_code_lineEdit.setText(code)
+            self.update_site_plan_code()
+        
     def update_block(self):
         data = self.block_lineEdit.text()
         for page in self.wizard().input_pages:

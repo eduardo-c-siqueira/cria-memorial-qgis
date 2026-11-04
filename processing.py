@@ -43,10 +43,10 @@ def process_general_info_dialog(user_settings: UserSettings, general_info: Gener
      else:
           return None
 
-def process_parcel_definition(iface, feature_list: list[FeatureContext]) -> tuple[BasicParcel, list[BasicParcel]] | None:
+def process_parcel_definition(iface, feature_list: list[FeatureContext], user_settings: UserSettings) -> tuple[BasicParcel, list[BasicParcel]] | None:
 
      zoom_to_features(iface, feature_list)
-     parcel_definition_wizard = BasicParcelsWizard(feature_list)
+     parcel_definition_wizard = BasicParcelsWizard(feature_list, user_settings)
 
      accepted = parcel_definition_wizard.exec_()
 
@@ -72,9 +72,9 @@ def process_parcel_definition(iface, feature_list: list[FeatureContext]) -> tupl
      result = (main_parcel, parcels)
      return result
 
-def process_main_parcel_dialog(base_parcel: BasicParcel) -> FullParcel | None:
+def process_main_parcel_dialog(base_parcel: BasicParcel, user_settings: UserSettings) -> FullParcel | None:
 
-     main_parcel_dialog = MainParcelDialog(base_parcel)
+     main_parcel_dialog = MainParcelDialog(base_parcel, user_settings)
      accepted = main_parcel_dialog.exec_()
 
      if accepted:

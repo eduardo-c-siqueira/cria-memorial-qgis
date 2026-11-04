@@ -34,6 +34,7 @@ from .bpw_input_page import BPWInputPage
 from .bpw_last_page import BPWLastPage
 from .confirm_action_dialog import ConfirmActionDialog
 from ..models.data_classes import FeatureContext
+from ..models.user_settings import UserSettings
 from ..paths import icon_path
 from ..qgs_processing import set_layer_labeling
 
@@ -47,7 +48,7 @@ FORM_CLASS, _ = uic.loadUiType(
 
 #TODO: Configurar para ignorar não preenchidos?
 class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
-    def __init__(self, feature_contexts: list[FeatureContext], parent=None):
+    def __init__(self, feature_contexts: list[FeatureContext], user_settings: UserSettings, parent=None):
         """Constructor."""
         super(BasicParcelsWizard, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
@@ -55,6 +56,7 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.user_settings = user_settings
         self.feature_contexts = feature_contexts
         self.layers = set([feature_context.layer for feature_context in feature_contexts])
         self.prepare_layers()
@@ -72,9 +74,13 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
         self.customButtonClicked.connect(self.on_custom_button_clicked)
 
     def populate(self):
+        
         self.removePage(1)
         self.removePage(0)
-        self.addPage(BPWFirstPage())
+        
+        self.first_page = BPWFirstPage(self.user_settings)
+        self.addPage(self.first_page)
+        
         for feature_context in self.feature_contexts:
             new_page = BPWInputPage(feature_context)
             self.addPage(new_page)
@@ -83,8 +89,10 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
                 if parcel_name:
                     new_page.set_parcel_name(str(parcel_name))
             self.input_pages.append(new_page)
+
         self.addPage(BPWLastPage())
 
+        self.first_page.load_data(self.user_settings)
 
     def get_results(self):
         result_list = []
@@ -115,8 +123,11 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
     def finish(self):
 
         self.clean_highlights
+        
         for fc in self.feature_contexts:
             fc.layer.commitChanges()
+
+        self.first_page.save_data(self.user_settings)
 
     def clean_highlights(self):
 

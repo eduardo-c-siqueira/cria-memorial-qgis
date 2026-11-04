@@ -78,3 +78,86 @@ class UserSettings:
     @last_cau_code.setter
     def last_cau_code(self, value: str):
         self.settings.setValue("last_used/cau_code", value)
+
+    # último valor preenchido para Quadra
+    @property
+    def last_block(self) -> str:
+        return self.settings.value("last_used/block", "")
+
+    def set_last_block(self, value: str):
+        self.settings.setValue("last_used/block", value)
+
+    @property
+    def recycle_block(self):
+        return self.settings.value("recycling/block", False, bool)
+
+    @recycle_block.setter
+    def recycle_block(self, value: bool):
+        self.settings.setValue("recycling/block", value)
+
+    # último valor preenchido para Planta
+    @property
+    def last_site_plan(self) -> tuple[str, str]:
+        return self.settings.value("last_used/site_plan", ""), self.settings.value("last_used/site_plan_code", "")
+
+    def set_last_site_plan(self, site_plan: str, code: str):
+        self.settings.setValue("last_used/site_plan", site_plan)
+        self.settings.setValue("last_used/site_plan_code", code)
+
+    @property
+    def recycle_site_plan(self):
+        return self.settings.value("recycling/site_plan", False, bool)
+
+    @recycle_site_plan.setter
+    def recycle_site_plan(self, value: bool):
+        self.settings.setValue("recycling/site_plan", value)
+
+    # último valor preenchido para Rua
+    @property
+    def last_street(self) -> tuple[str, str]:
+        return self.settings.value("last_used/street", ""), self.settings.value("last_used/street_code", "")
+
+    def set_last_street(self, street: str, code: str):
+        self.settings.setValue("last_used/street", street)
+        self.settings.setValue("last_used/street_code", code)
+
+    @property
+    def recycle_street(self):
+        return self.settings.value("recycling/street", False, bool)
+
+    @recycle_street.setter
+    def recycle_street(self, value: bool):
+        self.settings.setValue("recycling/street", value)
+
+    # último valor preenchido para Bairro
+    @property
+    def last_district(self) -> str:
+        return self.settings.value("last_used/district", "")
+
+    def set_last_district(self, value: str):
+        self.settings.setValue("last_used/district", value)
+
+    @property
+    def recycle_district(self):
+        return self.settings.value("recycling/district", False, bool)
+
+    @recycle_district.setter
+    def recycle_district(self, value: bool):
+        self.settings.setValue("recycling/district", value)
+
+    # último valor preenchido para Rua da Esquina
+    @property
+    def last_corner_street(self) -> tuple[str, str]:
+        return self.settings.value("last_used/corner_street", ""), self.settings.value("last_used/corner_street_code", "")
+
+    def set_last_corner_street(self, street: str, code: str):
+        self.settings.setValue("last_used/corner_street", street)
+        self.settings.setValue("last_used/corner_street_code", code)
+        
+    @property
+    def recycle_corner_street(self):
+        return self.settings.value("recycling/corner_street", False, bool)
+
+    @recycle_corner_street.setter
+    def recycle_corner_street(self, value: bool):
+        self.settings.setValue("recycling/corner_street", value)
