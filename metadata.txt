@@ -6,7 +6,7 @@
 name=MDI Curitiba
 qgisMinimumVersion=3.44
 description=Memorial descritivo inteligente segundo padrão utilizado em Curitiba-PR
-version=0.2.0
+version=0.2.1
 author=Eduardo da Costa Siqueira
 email=eduardo.edu28@gmail.com
 
