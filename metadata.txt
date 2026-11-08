@@ -27,9 +27,44 @@ hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
 
 changelog=
-    0.2.0 - Primeira versão disponibilizada para testes
-    0.2.1 - Correção de erros de formatação + melhorias no processo
-    0.2.2 - Correção na atualização do menu + melhorias no processo
+    0.2.2 - Correções e melhorias
+
+        Nesta versão foram corrigidos os seguintes problemas:
+
+        - Bug de menus repetidos: Ao atualizar ou reinstalar o plugin na versão anterior, um novo menu era adicionado sem excluir os anteriores, gerando menus repetidos
+        - Correção da formatação de coordenadas para 4 casas decimais, mais adequado ao padrão utilizado
+
+        Foi também incluída a seguinte melhoria:
+
+        - Possibilidade de reaproveitar a seleção de features entre processos: Ao terminar a redação de um memorial, as features selecionadas no início do processo são selecionadas novamente, para facilitar o processo caso o usuário queira utilizar as mesmas features para o memorial seguinte.
+
+    0.2.1 - Correções e novas funcionalidades
+        
+        Nesta versão foram corrigidos os seguintes problemas:
+
+        - Erro de digitação na palavra "perfazendo" no modelo de memorial Coordenadas.
+        - Formatação da exibição de coordenadas para modelo com separador de milhares, e com duas casas decimais.
+        - Arquivos de template de Issues, que não estavam sendo exibidos corretamente
+        
+        Foi também incluída uma nova funcionalidade:
+
+        - Possibilidade de reaproveitar também os últimos dados preenchidos para Quadra, Planta e Rua da frente, com janela de seleção das preferências no início do processo.
+
+        Inclui também um pequeno ajuste:
+
+        - Ajuste na janela de interrupção do processo, pedindo confirmação com opção de voltar para o processo ou realmente interromper
+
+    0.2.0 - Primeira versão do plugin disponibilizada para teste.
+
+        Nesta versão está disponível a confecção de Memorial de Loteamento nos formatos:
+
+        - Padrão
+        - Coordenadas
+
+        O documento final pode ser gerado nos formatos:
+
+        - .docx (recomendado)
+        - .pdf
 
 # Tags are comma separated with spaces allowed
 tags=
