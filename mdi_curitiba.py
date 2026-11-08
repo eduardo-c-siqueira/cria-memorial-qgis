@@ -254,6 +254,10 @@ class MdiCuritiba:
             self.cancel_dialog.exec_()
             return
 
+        for fc in self.feature_list:
+            fc.layer.select(fc.feature.id())
+        print("Executado")
+
     def create_memorial_p_loteamento(self):
 
         result_step_2 = process_parcel_definition(self.iface, self.feature_list, self.user_settings)
