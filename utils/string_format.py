@@ -21,6 +21,9 @@ def segment_ordinal(index: int):
 def float_to_string_2f(num: float) -> str:
     return f"{num:.2f}".replace(".",",")
 
+def float_to_string_4f(num: float) -> str:
+    return f"{num:.4f}".replace(".",",")
+
 def apply_thousands_separator(num: str) -> str:
 
     integer_str, separator, decimals = num.partition(",")
