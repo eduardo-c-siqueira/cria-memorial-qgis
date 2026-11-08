@@ -206,7 +206,7 @@ class MdiCuritiba:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&Criação Memorial Teste'),
+                str(self.menu),
                 action)
             self.iface.removeToolBarIcon(action)
 
