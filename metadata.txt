@@ -6,7 +6,7 @@
 name=MDI Curitiba
 qgisMinimumVersion=3.44
 description=Memorial descritivo inteligente padronizado
-version=0.2.1
+version=0.2.2
 author=Eduardo da Costa Siqueira
 email=eduardo.edu28@gmail.com
 
@@ -25,12 +25,15 @@ repository=https://github.com/eduardo-c-siqueira/cria-memorial-qgis
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-# changelog=
+
+changelog=
+    0.2.0 - Primeira versão disponibilizada para testes
+    0.2.1 - Correção de erros de formatação + melhorias no processo
+    0.2.2 - Correção na atualização do menu + melhorias no processo
 
 # Tags are comma separated with spaces allowed
 tags=
 
-homepage=
 # category=Plugins
 icon=resources/icons/aiG-icon.png
 # experimental flag

@@ -1,7 +1,7 @@
 # MDI - Curitiba: Memorial Descritivo Inteligente
 [![QGIS](https://img.shields.io/badge/QGIS-3.44%2B-589632?logo=qgis&logoColor=white)](https://qgis.org)
 [![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://python.org)
-[![Plugin Version](https://img.shields.io/badge/version-0.2.1-blue)](#)
+[![Plugin Version](https://img.shields.io/badge/version-0.2.2-blue)](#)
 [![Status](https://img.shields.io/badge/status-em_desenvolvimento-orange)](#)
 [![License](https://img.shields.io/badge/license-GPLv3-blueviolet.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
