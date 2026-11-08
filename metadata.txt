@@ -5,15 +5,18 @@
 [general]
 name=MDI Curitiba
 qgisMinimumVersion=3.44
-description=Memorial descritivo inteligente segundo padrão utilizado em Curitiba-PR
+description=Memorial descritivo inteligente padronizado
 version=0.2.1
 author=Eduardo da Costa Siqueira
 email=eduardo.edu28@gmail.com
 
-about=Automatização para criar memoriais no padrão fornecido, utilizando cruzamento de dados das camadas e input do usuário.
+about=Este plugin automatiza a escrita de memoriais descritivos para loteamento ou subdivisão/unificação de lotes, seguindo um padrão textual fornecido pelo cliente. O processo utiliza cruzamento de dados de camadas vetoriais e input do usuário para gerar o texto final.
+
+    This plugin automates the creation of legal descriptions for land development or lot split/merger, following a template provided by the client. The process uses data cross-referencing from vector layers and user input to generate the final text.
 
     Este programa é um software livre, licenciado sob os termos da GNU General Public License v3 (GPLv3) ou posterior.
 
+homepage=https://eduardo-c-siqueira.github.io/cria-memorial-qgis/
 tracker=https://github.com/eduardo-c-siqueira/cria-memorial-qgis/issues
 repository=https://github.com/eduardo-c-siqueira/cria-memorial-qgis
 # End of mandatory metadata
