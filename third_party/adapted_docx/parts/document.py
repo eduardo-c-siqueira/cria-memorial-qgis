@@ -134,7 +134,8 @@ class DocumentPart(StoryPart):
         try:
             return cast(CommentsPart, self.part_related_by(RT.COMMENTS))
         except KeyError:
-            assert self.package is not None
+            if self.package is None:
+                raise ValueError("self.package cannot be None")
             comments_part = CommentsPart.default(self.package)
             self.relate_to(comments_part, RT.COMMENTS)
             return comments_part
@@ -163,7 +164,8 @@ class DocumentPart(StoryPart):
             return cast(StylesPart, self.part_related_by(RT.STYLES))
         except KeyError:
             package = self.package
-            assert package is not None
+            if package is None:
+                raise ValueError("package cannot be None")
             styles_part = StylesPart.default(package)
             self.relate_to(styles_part, RT.STYLES)
             return styles_part

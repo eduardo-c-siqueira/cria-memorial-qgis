@@ -134,21 +134,20 @@ class Image:
         if width is None and height is None:
             return self.width, self.height
 
-        if width is None:
-            assert height is not None
+        if width is None and height is not None:
             scaling_factor = float(height) / float(self.height)
             width = round(self.width * scaling_factor)
 
-        if height is None:
+        if height is None and width is not None:
             scaling_factor = float(width) / float(self.width)
             height = round(self.height * scaling_factor)
 
         return Emu(width), Emu(height)
 
     @lazyproperty
-    def sha1(self):
-        """SHA1 hash digest of the image blob."""
-        return hashlib.sha1(self._blob).hexdigest()
+    def sha256(self):
+        """SHA256 hash digest of the image blob."""
+        return hashlib.sha256(self._blob).hexdigest()
 
     @classmethod
     def _from_stream(

@@ -72,7 +72,7 @@ class ImageParts:
         collection.
         """
         image = Image.from_file(image_descriptor)
-        matching_image_part = self._get_by_sha1(image.sha1)
+        matching_image_part = self._get_by_sha256(image.sha256)
         if matching_image_part is not None:
             return matching_image_part
         return self._add_image_part(image)
@@ -84,11 +84,11 @@ class ImageParts:
         self.append(image_part)
         return image_part
 
-    def _get_by_sha1(self, sha1: str) -> ImagePart | None:
-        """Return the image part in this collection having a SHA1 hash matching `sha1`,
+    def _get_by_sha256(self, sha256: str) -> ImagePart | None:
+        """Return the image part in this collection having a SHA256 hash matching `sha256`,
         or |None| if not found."""
         for image_part in self._image_parts:
-            if image_part.sha1 == sha1:
+            if image_part.sha256 == sha256:
                 return image_part
         return None
 

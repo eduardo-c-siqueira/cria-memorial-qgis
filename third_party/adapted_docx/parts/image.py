@@ -75,6 +75,6 @@ class ImagePart(Part):
         return cls(partname, content_type, blob)
 
     @property
-    def sha1(self):
-        """SHA1 hash digest of the blob of this image part."""
-        return hashlib.sha1(self.blob).hexdigest()
+    def sha256(self):
+        """SHA256 hash digest of the blob of this image part."""
+        return hashlib.sha256(self.blob).hexdigest()

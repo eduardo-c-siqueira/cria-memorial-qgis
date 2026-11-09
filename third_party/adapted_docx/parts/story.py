@@ -33,7 +33,8 @@ class StoryPart(XmlPart):
         such as dimensions and image type.
         """
         package = self._package
-        assert package is not None
+        if package is None:
+            raise ValueError("package cannot be None")
         image_part = package.get_or_add_image_part(image_descriptor)
         rId = self.relate_to(image_part, RT.IMAGE)
         return rId, image_part.image
@@ -91,5 +92,6 @@ class StoryPart(XmlPart):
     def _document_part(self) -> DocumentPart:
         """|DocumentPart| object for this package."""
         package = self.package
-        assert package is not None
+        if package is None:
+            raise ValueError("package cannot be None")
         return cast("DocumentPart", package.main_document_part)

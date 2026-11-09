@@ -119,7 +119,8 @@ class DocsPageFormatter:
     def _member_def(self, member: BaseEnum | BaseXmlEnum):
         """Return an individual member definition formatted as an RST glossary entry,
         wrapped to fit within 78 columns."""
-        assert member.__doc__ is not None
+        if member.__doc__ is None:
+            raise ValueError("member.__doc__ cannot be None")
         member_docstring = textwrap.dedent(member.__doc__).strip()
         member_docstring = textwrap.fill(
             member_docstring,

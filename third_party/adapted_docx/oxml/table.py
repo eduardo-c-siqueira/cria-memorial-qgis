@@ -592,7 +592,8 @@ class CT_Tc(BaseOxmlElement):
         self._span_to_width(width, top_tc, vMerge_val(top_tc))
         if height > 1:
             tc_below = self._tc_below
-            assert tc_below is not None
+            if tc_below is None:
+                raise ValueError("tc_below cannot be None")
             tc_below._grow_to(width, height - 1, top_tc)
 
     def _insert_tcPr(self, tcPr: CT_TcPr) -> CT_TcPr:
@@ -644,7 +645,8 @@ class CT_Tc(BaseOxmlElement):
     def _remove(self):
         """Remove this `w:tc` element from the XML tree."""
         parent_element = self.getparent()
-        assert parent_element is not None
+        if parent_element is None:
+            raise ValueError("parent_element cannot be None")
         parent_element.remove(self)
 
     def _remove_trailing_empty_p(self):
@@ -724,7 +726,6 @@ class CT_Tc(BaseOxmlElement):
 
         next_tc = self._next_tc
         raise_on_invalid_swallow(next_tc)
-        assert next_tc is not None
         next_tc._move_content_to(top_tc)
         self._add_width_of(next_tc)
         self.grid_span += next_tc.grid_span

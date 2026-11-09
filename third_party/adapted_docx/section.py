@@ -408,7 +408,8 @@ class _Footer(_BaseHeaderFooter):
         """|FooterPart| object containing content of this footer."""
         footerReference = self._sectPr.get_footerReference(self._hdrftr_index)
         # -- currently this is never called when `._has_definition` evaluates False --
-        assert footerReference is not None
+        if footerReference is None:
+            raise ValueError("footerReference cannot be None")
         return self._document_part.footer_part(footerReference.rId)
 
     def _drop_definition(self):
@@ -454,7 +455,8 @@ class _Header(_BaseHeaderFooter):
         """|HeaderPart| object containing content of this header."""
         headerReference = self._sectPr.get_headerReference(self._hdrftr_index)
         # -- currently this is never called when `._has_definition` evaluates False --
-        assert headerReference is not None
+        if headerReference is None:
+            raise ValueError("headerReference cannot be None")
         return self._document_part.header_part(headerReference.rId)
 
     def _drop_definition(self):
