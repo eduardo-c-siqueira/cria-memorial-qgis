@@ -313,7 +313,9 @@ class MdiCuritiba:
                         )
                     # docx_generate.memorial_doc(memorial_result.heading, memorial_result.body, memorial_result.architect_identification, final_result_dlg.new_file_name, '')
             else:
-                NotImplementedError
+                self.cancel_dialog.exec()
+                return
+
         else:
             self.cancel_dialog.exec()
             return
@@ -383,7 +385,8 @@ class MdiCuritiba:
                     )
         
         else:
-            raise NotImplementedError
+            self.cancel_dialog.exec()
+            return
 
 
     def open_settings_dialog(self):
