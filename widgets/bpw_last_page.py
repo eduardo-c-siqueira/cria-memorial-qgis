@@ -88,7 +88,7 @@ class BPWLastPage(QtWidgets.QWizardPage, FORM_CLASS):
                 )
                 layout.addWidget(item, page_id_index+1, item_index)
                 if item_index != 0:
-                    item.setAlignment(Qt.AlignCenter)
+                    item.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             radio = items[0]
             radio.toggled.connect(self.manage_main_parcel_selection)
@@ -107,7 +107,7 @@ class BPWLastPage(QtWidgets.QWizardPage, FORM_CLASS):
 
     def validatePage(self):
         if self.button_group.checkedButton() is None:
-            FailedValidationDialog("Lote Principal").exec_()
+            FailedValidationDialog("Lote Principal").exec()
             return False
         else:
             return True

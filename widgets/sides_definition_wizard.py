@@ -276,11 +276,11 @@ class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
                 if self.consider_4_sides is False and (index == 7 or index == 8):
                     continue
                 elif combobox.currentIndex() == -1:
-                    FailedValidationDialog().exec_()
+                    FailedValidationDialog().exec()
                     return False
             return True
         elif self.sides_quant_comboBox.currentIndex() == -1:
-            FailedValidationDialog().exec_()
+            FailedValidationDialog().exec()
             return False
         else:
             return True
@@ -375,7 +375,7 @@ class SidesDefinitionWizard(QtWidgets.QWizard, FORM_CLASS):
 
     def reject(self):
 
-        confirmed = ConfirmActionDialog(self).exec_()
+        confirmed = ConfirmActionDialog(self).exec()
 
         if confirmed:
             super().reject()

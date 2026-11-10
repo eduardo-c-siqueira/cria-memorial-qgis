@@ -6,7 +6,6 @@ from qgis.core import (
      QgsProject,
      QgsMapLayerType,
      Qgis,
-     QgsWkbTypes,
      QgsLineSymbol,
      QgsRendererCategory,
      QgsCategorizedSymbolRenderer,
@@ -56,7 +55,7 @@ def qgspoint_from_xypoint(target_layer: QgsVectorLayer, point: QgsPointXY, id: i
 def filter_polygon_features(project: QgsProject) -> list[FeatureContext]:
      result_list = []
      for layer in project.mapLayers().values():
-          if layer.type() == QgsMapLayerType.VectorLayer and layer.geometryType() == QgsWkbTypes.PolygonGeometry:
+          if layer.type() == QgsMapLayerType.VectorLayer and layer.geometryType() ==Qgis.GeometryType.Polygon:
                for feature in layer.getSelectedFeatures():
                     if feature.geometry().type() == Qgis.GeometryType.Polygon:
                          result_list.append(FeatureContext(layer=layer, feature=feature))
@@ -99,7 +98,7 @@ def capture_polygons(self, project: QgsProject):
           layer
           for layer in project.mapLayers().values()
           if layer.type() == QgsMapLayerType.VectorLayer
-          and layer.geometryType() == QgsWkbTypes.PolygonGeometry
+          and layer.geometryType() ==Qgis.GeometryType.Polygon
           }
      print("capture the polygons in each layer and verifies multiPolygons")
      polygons = []

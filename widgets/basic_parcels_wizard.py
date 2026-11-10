@@ -27,7 +27,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtGui import QIcon
-from PyQt5.QtCore import QMetaType
+from qgis.PyQt.QtCore import QMetaType
 from qgis.core import QgsField, Qgis
 from .bpw_first_page import BPWFirstPage
 from .bpw_input_page import BPWInputPage
@@ -158,7 +158,7 @@ class BasicParcelsWizard(QtWidgets.QWizard, FORM_CLASS):
 
     def reject(self):
 
-        confirmed = ConfirmActionDialog(self).exec_()
+        confirmed = ConfirmActionDialog(self).exec()
 
         if confirmed:
             super().reject()

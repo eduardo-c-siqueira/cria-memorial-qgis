@@ -61,7 +61,7 @@ class ShowResultDialog(QtWidgets.QDialog, FORM_CLASS):
             "Configurações",
             QtWidgets.QDialogButtonBox.ActionRole
         )
-        self.settings_btn.clicked.connect(self.user_settings_dialog.exec_)
+        self.settings_btn.clicked.connect(self.user_settings_dialog.exec)
         self.textBrowser.setPlainText(result)
 
     def set_file_name(self, format: DocumentFormat):
@@ -76,19 +76,19 @@ class ShowResultDialog(QtWidgets.QDialog, FORM_CLASS):
 
             case DocumentFormat.PDF:
                 if not self.user_settings.atc_logo_path or not self.user_settings.main_logo_path:
-                    AlertDialog("Antes de continuar, defina os arquivos de logo para o PDF, ou mude a opção de salvamento!", False, self).exec_()
-                    self.user_settings_dialog.exec_()
+                    AlertDialog("Antes de continuar, defina os arquivos de logo para o PDF, ou mude a opção de salvamento!", False, self).exec()
+                    self.user_settings_dialog.exec()
                     return
 
             case DocumentFormat.DOCX:
                 if not self.user_settings.docx_template_path:
-                    AlertDialog("Antes de continuar, defina o arquivo de template DOCX, ou mude a opção de salvamento!", False, self).exec_()
-                    self.user_settings_dialog.exec_()
+                    AlertDialog("Antes de continuar, defina o arquivo de template DOCX, ou mude a opção de salvamento!", False, self).exec()
+                    self.user_settings_dialog.exec()
                     return
                 
             case _:
-                AlertDialog("Sem opções de salvamento definidas! Faça a configuração antes de prosseguir!", False, self).exec_()
-                self.user_settings_dialog.exec_()
+                AlertDialog("Sem opções de salvamento definidas! Faça a configuração antes de prosseguir!", False, self).exec()
+                self.user_settings_dialog.exec()
                 return
             
         self.set_file_name(format_preference)
@@ -96,7 +96,7 @@ class ShowResultDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def reject(self):
 
-        confirmed = ConfirmActionDialog(self).exec_()
+        confirmed = ConfirmActionDialog(self).exec()
 
         if confirmed:
             super().reject()

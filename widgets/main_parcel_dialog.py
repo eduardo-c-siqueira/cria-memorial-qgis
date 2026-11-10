@@ -115,7 +115,7 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
                 missing_info.append("Forma Regular/Irregular")
             if street_side_selected is False:
                 missing_info.append("Lado Ímpar/Par")
-            FailedValidationDialog(*missing_info).exec_()
+            FailedValidationDialog(*missing_info).exec()
 
     def get_result(self) -> MainParcelDialogResult:
         return MainParcelDialogResult(
@@ -136,7 +136,7 @@ class MainParcelDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def reject(self):
 
-        confirmed = ConfirmActionDialog(self).exec_()
+        confirmed = ConfirmActionDialog(self).exec()
 
         if confirmed:
             super().reject()

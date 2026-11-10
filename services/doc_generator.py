@@ -20,11 +20,11 @@ def save_as_pdf(heading, body, architect_identification, new_file_path, user_set
     document.setDocumentMargin(5)
 
     # Configuração da impressora
-    printer = QPrinter(QPrinter.HighResolution)
-    printer.setPageSize(QPageSize(QPageSize.A4))
-    printer.setPageMargins(20,10,20,10, QPrinter.Millimeter)
+    printer = QPrinter(QPrinter.PrinterMode.HighResolution)
+    printer.setPageSize(QPageSize(QPageSize.PageSizeId.A4))
+    printer.setPageMargins(20,10,20,10, QPrinter.Unit.Millimeter)
 
-    page_rect = printer.pageRect(QPrinter.Point)
+    page_rect = printer.pageRect(QPrinter.Unit.Point)
 
     document.setPageSize(
         QSizeF(
@@ -33,11 +33,11 @@ def save_as_pdf(heading, body, architect_identification, new_file_path, user_set
         )
     )
 
-    print("paperRect:", printer.paperRect(QPrinter.Millimeter))
-    print("pageRect:", printer.pageRect(QPrinter.Millimeter))
+    print("paperRect:", printer.paperRect(QPrinter.Unit.Millimeter))
+    print("pageRect:", printer.pageRect(QPrinter.Unit.Millimeter))
 
 
-    printer.setOutputFormat(QPrinter.PdfFormat)
+    printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
     printer.setOutputFileName(new_file_path)
 
     html = f"""

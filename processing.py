@@ -35,7 +35,7 @@ def process_general_info_dialog(user_settings: UserSettings, general_info: Gener
 
      general_info_dialog = GeneralInfoDialog(user_settings)
      
-     accepted = general_info_dialog.exec_()
+     accepted = general_info_dialog.exec()
      if accepted:
           general_info = general_info_dialog.as_general_info_object()
           memorial_type = general_info_dialog.get_memorial_type()
@@ -48,7 +48,7 @@ def process_parcel_definition(iface, feature_list: list[FeatureContext], user_se
      zoom_to_features(iface, feature_list)
      parcel_definition_wizard = BasicParcelsWizard(feature_list, user_settings)
 
-     accepted = parcel_definition_wizard.exec_()
+     accepted = parcel_definition_wizard.exec()
 
      parcels: list[BasicParcel] = []
      if accepted:
@@ -75,7 +75,7 @@ def process_parcel_definition(iface, feature_list: list[FeatureContext], user_se
 def process_main_parcel_dialog(base_parcel: BasicParcel, user_settings: UserSettings) -> FullParcel | None:
 
      main_parcel_dialog = MainParcelDialog(base_parcel, user_settings)
-     accepted = main_parcel_dialog.exec_()
+     accepted = main_parcel_dialog.exec()
 
      if accepted:
           result = main_parcel_dialog.get_result()
@@ -135,7 +135,7 @@ def process_sides_definition(iface, project: QgsProject, parcel: FullParcel) -> 
 
      sides_definition_widget = SidesDefinitionWizard(segments)
 
-     accepted = sides_definition_widget.exec_()
+     accepted = sides_definition_widget.exec()
      if accepted:
           #Passa lados para o main_parcel
           result = sides_definition_widget.get_result()
@@ -155,7 +155,7 @@ def process_confrontation_definition(parcel: FullParcel) -> bool:
      if parcel.back is not None:
           sides.append(parcel.back)
      dialog = StreetConfrontationsDialog(sides)
-     accepted = dialog.exec_()
+     accepted = dialog.exec()
 
      return accepted
 
@@ -185,7 +185,7 @@ def process_parcel_vertex_definition(project: QgsProject, parcel: FullParcel) ->
 
      dlg = FeaturePickerDialog(vertex_layer)
 
-     accepted = dlg.exec_()
+     accepted = dlg.exec()
 
      if accepted:
 

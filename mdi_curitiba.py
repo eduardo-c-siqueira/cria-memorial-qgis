@@ -223,10 +223,10 @@ class MdiCuritiba:
         # Cria verificação de features selecionadas antes de continuar
         self.feature_list = filter_polygon_features(self.project)
         if not self.feature_list:
-            AlertDialog("Nenhum polígno selecionado!\nPor favor, selecione os polígonos a serem utilizados no documento.").exec_()
+            AlertDialog("Nenhum polígno selecionado!\nPor favor, selecione os polígonos a serem utilizados no documento.").exec()
             return
         else:
-            accepted = AlertDialog("Lembre-se de selecionar todos os polígonos a serem utilizados no documento antes de continuar!", True).exec_()
+            accepted = AlertDialog("Lembre-se de selecionar todos os polígonos a serem utilizados no documento antes de continuar!", True).exec()
             if not accepted:
                 return
 
@@ -235,10 +235,10 @@ class MdiCuritiba:
         if result_step_1 is not None:
             self.general_info, memorial_type = result_step_1
         else:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
-        recycling_options_confirmed = DataRecyclingDialog(self.user_settings).exec_()
+        recycling_options_confirmed = DataRecyclingDialog(self.user_settings).exec()
 
         if recycling_options_confirmed:
             match memorial_type:
@@ -251,7 +251,7 @@ class MdiCuritiba:
 
         else:
             
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
         for fc in self.feature_list:
@@ -264,14 +264,14 @@ class MdiCuritiba:
         if result_step_2 is not None:
             selected_parcel, other_parcels = result_step_2
         else:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
         result_step_3 = process_main_parcel_dialog(selected_parcel, self.user_settings)
         if result_step_3 is not None:
             self.main_parcel = result_step_3
         else:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
         #TODO: inserir definição entre padrão e coordenadas aqui
@@ -283,7 +283,7 @@ class MdiCuritiba:
 
         result_step_4 = process_sides_definition(self.iface, self.project, self.memorial.main_parcel)
         if result_step_4 is False:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
         result_step_5 = process_confrontation_definition(self.memorial.main_parcel)
@@ -291,7 +291,7 @@ class MdiCuritiba:
             #Processa criação de memorial
             memorial_full_text, memorial_result = self.memorial.generate_memorial()
             final_result_dlg = ShowResultDialog(memorial_full_text, self.user_settings)
-            accepted = final_result_dlg.exec_()
+            accepted = final_result_dlg.exec()
 
             if accepted:
                 match self.user_settings.output_doc_format_preference:
@@ -315,7 +315,7 @@ class MdiCuritiba:
             else:
                 NotImplementedError
         else:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
 
@@ -325,20 +325,20 @@ class MdiCuritiba:
         if result_step_2 is not None:
             selected_parcel, other_parcels = result_step_2
         else:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
         result_step_3 = process_main_parcel_dialog(selected_parcel, self.user_settings)
         if result_step_3 is not None:
             self.main_parcel = result_step_3
         else:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
 
         result_step_4 = process_parcel_vertex_definition(self.project, self.main_parcel)
         
         if result_step_4 is False:
-            self.cancel_dialog.exec_()
+            self.cancel_dialog.exec()
             return
         
         #TODO: inserir definição entre padrão e coordenadas aqui
@@ -351,14 +351,14 @@ class MdiCuritiba:
 
         # result_step_4 = process_sides_definition(self.iface, self.project, self.memorial.main_parcel)
         # if result_step_4 is False:
-        #     self.cancel_dialog.exec_()
+        #     self.cancel_dialog.exec()
         #     return
 
         #Processa criação de memorial
         memorial_full_text, memorial_result = self.memorial.generate_memorial()
         final_result_dlg = ShowResultDialog(memorial_full_text, self.user_settings)
         
-        accepted = final_result_dlg.exec_()
+        accepted = final_result_dlg.exec()
 
         if accepted:
         
@@ -389,4 +389,4 @@ class MdiCuritiba:
     def open_settings_dialog(self):
 
         dlg = UserSettingsDialog(self.user_settings)
-        dlg.exec_()
+        dlg.exec()

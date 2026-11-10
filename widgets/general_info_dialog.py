@@ -93,7 +93,7 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
                 self.memorial_type_Label.setStyleSheet("color: red;")
                 warnings.append("Tipo de memorial")
 
-            FailedValidationDialog(*warnings).exec_()
+            FailedValidationDialog(*warnings).exec()
             return
 
         else:
@@ -105,7 +105,7 @@ class GeneralInfoDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def reject(self):
 
-        confirmed = ConfirmActionDialog(self).exec_()
+        confirmed = ConfirmActionDialog(self).exec()
 
         if confirmed:
             super().reject()

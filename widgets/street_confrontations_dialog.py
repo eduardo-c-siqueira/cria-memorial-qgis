@@ -99,7 +99,7 @@ class StreetConfrontationsDialog(QtWidgets.QDialog, FORM_CLASS):
         
     def reject(self):
 
-        confirmed = ConfirmActionDialog(self).exec_()
+        confirmed = ConfirmActionDialog(self).exec()
 
         if confirmed:
             super().reject()
